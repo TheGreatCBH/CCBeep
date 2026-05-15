@@ -28,6 +28,9 @@ settings.local.json
 .history
 *.log
 
+# Session resume
+resume.txt
+
 # Backup files
 *.bak
 *.backup
