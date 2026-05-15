@@ -82,10 +82,14 @@ No need to edit the script. Three ways to customize:
 ### 0. Interactive configurator (easiest)
 
 ```bash
+# One command:
+./configure.sh --complete Sosumi --error Funk
+./configure.sh --complete 12 --error 5        # by number
+./configure.sh --list                         # see options
+
+# Or interactive (terminal only):
 ./configure.sh
 ```
-
-Walks you through picking sounds for each event with a numbered menu, then tests them.
 
 ### 1. Persistent config (recommended)
 
@@ -230,11 +234,16 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.
 
 不需要改脚本，三种方式：
 
-**0. 交互式配置器（最简单）**
+**0. 配置器（最简单）**
 ```bash
+# 一条命令：
+./configure.sh --complete Sosumi --error Funk
+./configure.sh --complete 12 --error 5        # 按编号
+./configure.sh --list                         # 查看可选
+
+# 或交互式（终端里运行）：
 ./configure.sh
 ```
-菜单式选择音效，选完直接测试。
 
 **1. 配置文件（推荐）**
 
