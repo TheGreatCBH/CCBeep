@@ -28,6 +28,9 @@ settings.local.json
 .history
 *.log
 
+# Claude Code project instructions (local only)
+CLAUDE.md
+
 # Session resume
 resume.txt
 
