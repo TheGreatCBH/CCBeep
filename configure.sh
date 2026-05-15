@@ -187,6 +187,12 @@ echo ""
 show_current
 show_list
 echo ""
+echo "  ── Quick setup (non-interactive) ──"
+echo "  ./configure.sh --complete <name|number> --error <name|number>"
+echo "  ./configure.sh --list          show sounds"
+echo "  ./configure.sh --test          test current config"
+echo "  ./configure.sh --reset         restore defaults"
+echo ""
 
 # Pick complete sound
 current_complete=""
