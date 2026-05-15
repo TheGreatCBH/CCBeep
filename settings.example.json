@@ -1,5 +1,5 @@
 {
-  "_description": "CCBee hook configuration reference. Use install.sh for automatic setup, or install as a Claude Code plugin. Replace <CCBEEP_DIR> with the absolute path to this project.",
+  "_description": "CCBeep hook configuration reference. Use install.sh for automatic setup, or install as a Claude Code plugin. Replace <CCBEEP_DIR> with the absolute path to this project.",
 
   "hooks": {
 

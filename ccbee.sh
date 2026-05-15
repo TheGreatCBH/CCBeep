@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# CCBee - Sound notifications for Claude Code events
-# https://github.com/your-username/CCBeep
+# CCBeep - Sound notifications for Claude Code events
+# https://github.com/your-username/CCBeepp
 #
 # Usage:
 #   ccbee.sh prompt          Play prompt sound (waiting for input)

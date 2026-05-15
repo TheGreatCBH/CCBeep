@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CCBee — One-command installer
+# CCBeep — One-command installer
 # Usage: curl -fsSL <raw-url> | bash   OR   ./install.sh
 set -euo pipefail
 
@@ -11,14 +11,14 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "CCBee installer"
+echo "CCBeep installer"
 echo "==============="
 echo ""
 
 # ── Check prerequisites ──────────────────────────────────────────────────────
 if [ ! -f "$CCBEE_DIR/ccbee.sh" ]; then
     echo -e "${RED}Error: ccbee.sh not found in $CCBEE_DIR${NC}"
-    echo "Please run this script from the CCBee project directory."
+    echo "Please run this script from the CCBeep project directory."
     exit 1
 fi
 
@@ -111,7 +111,7 @@ print(f"  Stop         → task stop (auto error/success)")
 PYEOF
 
 echo ""
-echo -e "${GREEN}Done! CCBee is now active.${NC}"
+echo -e "${GREEN}Done! CCBeep is now active.${NC}"
 echo ""
 echo "Test your setup:"
 echo "  $CCBEE_DIR/ccbee.sh complete"

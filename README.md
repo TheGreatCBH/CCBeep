@@ -1,4 +1,4 @@
-# CCBee
+# CCBeep
 
 Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or hits an error, without watching the terminal.
 
@@ -15,7 +15,7 @@ Sound notifications for [Claude Code](https://claude.ai/code) — know when Clau
 ### Method 1: One-command install
 
 ```bash
-git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
+git clone https://github.com/your-username/CCBeepp.git && cd CCBeep && ./install.sh
 ```
 
 The installer automatically detects paths, backs up your settings, and merges the hooks.
@@ -29,7 +29,7 @@ Add the marketplace and enable the plugin in `~/.claude/settings.json`:
   "extraKnownMarketplaces": {
     "ccbee": {
       "source": "github",
-      "repo": "your-username/CCBee"
+      "repo": "your-username/CCBeep"
     }
   },
   "enabledPlugins": {
@@ -51,7 +51,7 @@ Add directly to `~/.claude/settings.json`:
       {
         "matcher": "",
         "hooks": [
-          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete" }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeepp/ccbee.sh complete" }
         ]
       }
     ],
@@ -59,7 +59,7 @@ Add directly to `~/.claude/settings.json`:
       {
         "matcher": "",
         "hooks": [
-          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop" }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeepp/ccbee.sh stop" }
         ]
       }
     ]
@@ -97,7 +97,7 @@ Mute state is stored in `~/.ccbee_mute` — delete it manually to unmute from an
 | **Task stop (success)** | `Stop` | Completion chime | Agent stops normally |
 | **Task stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
 
-The `Stop` hook receives JSON on stdin. CCBee reads the `reason` field and picks the right sound automatically.
+The `Stop` hook receives JSON on stdin. CCBeep reads the `reason` field and picks the right sound automatically.
 
 ## Uninstall
 
@@ -117,7 +117,7 @@ Remove from `~/.claude/settings.json`:
 
 Remove the `hooks` block from `~/.claude/settings.json`.
 
-Then delete the CCBee directory.
+Then delete the CCBeep directory.
 
 ## Customizing Sounds
 
@@ -154,7 +154,7 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 ## 中文说明
 
-### CCBee — Claude Code 声音通知工具
+### CCBeep — Claude Code 声音通知工具
 
 让 Claude Code 在任务完成或中断时自动发出提示音，不用盯着终端也能知道状态变化。
 
@@ -162,7 +162,7 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 **方式一：一键安装**
 ```bash
-git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
+git clone https://github.com/your-username/CCBeepp.git && cd CCBeep && ./install.sh
 ```
 
 **方式二：作为插件安装**
@@ -171,7 +171,7 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.s
 ```json
 {
   "extraKnownMarketplaces": {
-    "ccbee": { "source": "github", "repo": "your-username/CCBee" }
+    "ccbee": { "source": "github", "repo": "your-username/CCBeep" }
   },
   "enabledPlugins": {
     "ccbee@ccbee": true

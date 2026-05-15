@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CCBee mute — temporarily silence sound notifications
+# CCBeep mute — temporarily silence sound notifications
 #
 # Usage:
 #   ./mute.sh           Mute permanently (until unmute.sh is run)

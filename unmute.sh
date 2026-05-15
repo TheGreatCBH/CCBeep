@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CCBee unmute — re-enable sound notifications
+# CCBeep unmute — re-enable sound notifications
 set -euo pipefail
 
 MUTE_FILE="$HOME/.ccbee_mute"

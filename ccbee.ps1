@@ -1,5 +1,5 @@
-# CCBee - Sound notifications for Claude Code events
-# https://github.com/your-username/CCBeep
+# CCBeep - Sound notifications for Claude Code events
+# https://github.com/your-username/CCBeepp
 #
 # Native PowerShell version for Windows.
 #
