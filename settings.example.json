@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<CCBEEP_DIR>/ccbee.sh complete",
+            "command": "<CCBEEP_DIR>/ccbeep.sh complete",
             "async": true
           }
         ]
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<CCBEEP_DIR>/ccbee.sh stop",
+            "command": "<CCBEEP_DIR>/ccbeep.sh stop",
             "async": true
           }
         ]
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event complete",
+            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbeep.ps1\" -Event complete",
             "shell": "powershell",
             "async": true
           }
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event stop",
+            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbeep.ps1\" -Event stop",
             "shell": "powershell",
             "async": true
           }
@@ -63,6 +63,6 @@
 
   "_sound_customization": {
     "macOS_available_sounds": ["Basso", "Blow", "Bottle", "Frog", "Funk", "Glass", "Hero", "Morse", "Ping", "Pop", "Purr", "Sosumi", "Submarine", "Tink"],
-    "how_to_customize": "Edit the sound names in ccbee.sh — no config file needed."
+    "how_to_customize": "Edit the sound names in ccbeep.sh — no config file needed."
   }
 }

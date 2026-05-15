@@ -16,14 +16,14 @@ echo "==============="
 echo ""
 
 # ── Check prerequisites ──────────────────────────────────────────────────────
-if [ ! -f "$CCBEE_DIR/ccbee.sh" ]; then
-    echo -e "${RED}Error: ccbee.sh not found in $CCBEE_DIR${NC}"
+if [ ! -f "$CCBEE_DIR/ccbeep.sh" ]; then
+    echo -e "${RED}Error: ccbeep.sh not found in $CCBEE_DIR${NC}"
     echo "Please run this script from the CCBeep project directory."
     exit 1
 fi
 
-if [ ! -x "$CCBEE_DIR/ccbee.sh" ]; then
-    chmod +x "$CCBEE_DIR/ccbee.sh"
+if [ ! -x "$CCBEE_DIR/ccbeep.sh" ]; then
+    chmod +x "$CCBEE_DIR/ccbeep.sh"
 fi
 
 if ! command -v python3 &>/dev/null; then
@@ -42,7 +42,7 @@ fi
 python3 - "$CCBEE_DIR" "$SETTINGS_FILE" << 'PYEOF'
 import sys, json, os
 
-ccbee_dir = sys.argv[1]
+ccbeep_dir = sys.argv[1]
 settings_file = sys.argv[2]
 
 # Load or create settings
@@ -60,7 +60,7 @@ new_hooks = {
             "hooks": [
                 {
                     "type": "command",
-                    "command": f"{ccbee_dir}/ccbee.sh complete"
+                    "command": f"{ccbeep_dir}/ccbeep.sh complete"
                 }
             ]
         }
@@ -71,7 +71,7 @@ new_hooks = {
             "hooks": [
                 {
                     "type": "command",
-                    "command": f"{ccbee_dir}/ccbee.sh stop"
+                    "command": f"{ccbeep_dir}/ccbeep.sh stop"
                 }
             ]
         }
@@ -114,7 +114,7 @@ echo ""
 echo -e "${GREEN}Done! CCBeep is now active.${NC}"
 echo ""
 echo "Test your setup:"
-echo "  $CCBEE_DIR/ccbee.sh complete"
+echo "  $CCBEE_DIR/ccbeep.sh complete"
 echo ""
 echo "Mute / unmute:"
 echo "  $CCBEE_DIR/mute.sh 2h    Mute for 2 hours"
@@ -123,4 +123,4 @@ echo ""
 echo "To uninstall, restore the backup:"
 echo "  cp $BACKUP $SETTINGS_FILE"
 echo ""
-echo "To customize sounds, edit: $CCBEE_DIR/ccbee.sh"
+echo "To customize sounds, edit: $CCBEE_DIR/ccbeep.sh"

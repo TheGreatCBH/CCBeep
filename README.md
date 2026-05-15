@@ -8,14 +8,14 @@ Sound notifications for [Claude Code](https://claude.ai/code) — know when Clau
 |----------|-------------|----------|
 | **macOS** | `afplay` with built-in system sounds (Purr / Basso) | Terminal bell |
 | **Linux** | `paplay` or `aplay` with freedesktop sound theme | Terminal bell |
-| **Windows** | PowerShell `[System.Console]::Beep` or ccbee.ps1 | BEL character |
+| **Windows** | PowerShell `[System.Console]::Beep` or ccbeep.ps1 | BEL character |
 
 ## Installation
 
 ### Method 1: One-command install
 
 ```bash
-git clone https://github.com/your-username/CCBeepp.git && cd CCBeep && ./install.sh
+git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.sh
 ```
 
 The installer automatically detects paths, backs up your settings, and merges the hooks.
@@ -27,13 +27,13 @@ Add the marketplace and enable the plugin in `~/.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "ccbee": {
+    "ccbeep": {
       "source": "github",
       "repo": "your-username/CCBeep"
     }
   },
   "enabledPlugins": {
-    "ccbee@ccbee": true
+    "ccbeep@ccbeep": true
   }
 }
 ```
@@ -51,7 +51,7 @@ Add directly to `~/.claude/settings.json`:
       {
         "matcher": "",
         "hooks": [
-          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeepp/ccbee.sh complete" }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbeep.sh complete" }
         ]
       }
     ],
@@ -59,7 +59,7 @@ Add directly to `~/.claude/settings.json`:
       {
         "matcher": "",
         "hooks": [
-          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeepp/ccbee.sh stop" }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbeep.sh stop" }
         ]
       }
     ]
@@ -70,8 +70,8 @@ Add directly to `~/.claude/settings.json`:
 ### Test sounds
 
 ```bash
-./ccbee.sh complete     # Completion chime
-./ccbee.sh error        # Warning sound
+./ccbeep.sh complete     # Completion chime
+./ccbeep.sh error        # Warning sound
 ```
 
 ## Mute / Unmute
@@ -87,7 +87,7 @@ Temporarily silence notifications without uninstalling:
 ./unmute.sh       # Unmute immediately
 ```
 
-Mute state is stored in `~/.ccbee_mute` — delete it manually to unmute from anywhere.
+Mute state is stored in `~/.ccbeep_mute` — delete it manually to unmute from anywhere.
 
 ## Event Types
 
@@ -110,8 +110,8 @@ cp ~/.claude/settings.json.backup.* ~/.claude/settings.json
 ### If installed as a plugin
 
 Remove from `~/.claude/settings.json`:
-- Delete `"ccbee@ccbee"` from `enabledPlugins`
-- Delete `"ccbee"` from `extraKnownMarketplaces`
+- Delete `"ccbeep@ccbeep"` from `enabledPlugins`
+- Delete `"ccbeep"` from `extraKnownMarketplaces`
 
 ### If installed manually
 
@@ -130,7 +130,7 @@ Basso  Blow  Bottle  Frog  Funk  Glass  Hero
 Morse  Ping  Pop  Purr  Sosumi  Submarine  Tink
 ```
 
-Edit `ccbee.sh` and change the sound names in the `sound_macos()` function.
+Edit `ccbeep.sh` and change the sound names in the `sound_macos()` function.
 
 ### Linux
 
@@ -140,11 +140,11 @@ Available sounds depend on your sound theme. Common paths:
 - `/usr/share/sounds/ubuntu/stereo/`
 - `/usr/share/sounds/gnome/default/alerts/`
 
-Edit `ccbee.sh` to change the paths in `sound_linux()`.
+Edit `ccbeep.sh` to change the paths in `sound_linux()`.
 
 ### Windows
 
-Edit `ccbee.ps1` and change the `Frequency` and `Duration` parameters in the `Play-Beep` calls.
+Edit `ccbeep.ps1` and change the `Frequency` and `Duration` parameters in the `Play-Beep` calls.
 
 ## No Dependencies
 
@@ -162,7 +162,7 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 **方式一：一键安装**
 ```bash
-git clone https://github.com/your-username/CCBeepp.git && cd CCBeep && ./install.sh
+git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.sh
 ```
 
 **方式二：作为插件安装**
@@ -171,10 +171,10 @@ git clone https://github.com/your-username/CCBeepp.git && cd CCBeep && ./install
 ```json
 {
   "extraKnownMarketplaces": {
-    "ccbee": { "source": "github", "repo": "your-username/CCBeep" }
+    "ccbeep": { "source": "github", "repo": "your-username/CCBeep" }
   },
   "enabledPlugins": {
-    "ccbee@ccbee": true
+    "ccbeep@ccbeep": true
   }
 }
 ```

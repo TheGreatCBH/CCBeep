@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 # CCBeep - Sound notifications for Claude Code events
-# https://github.com/your-username/CCBeepp
+# https://github.com/your-username/CCBeep
 #
 # Usage:
-#   ccbee.sh prompt          Play prompt sound (waiting for input)
-#   ccbee.sh complete        Play completion sound
-#   ccbee.sh error           Play error/interrupt sound
-#   ccbee.sh stop            Read stdin JSON from Claude Code Stop hook,
+#   ccbeep.sh prompt          Play prompt sound (waiting for input)
+#   ccbeep.sh complete        Play completion sound
+#   ccbeep.sh error           Play error/interrupt sound
+#   ccbeep.sh stop            Read stdin JSON from Claude Code Stop hook,
 #                            auto-detect error vs complete
 #
 # Hook integration (settings.json):
-#   "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh complete"}]}]
-#   "Stop":         [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh stop"}]}]
+#   "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbeep.sh complete"}]}]
+#   "Stop":         [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbeep.sh stop"}]}]
 set -euo pipefail
 
 # ── Mute check ──────────────────────────────────────────────────────────────────
-# If ~/.ccbee_mute exists, exit silently.
+# If ~/.ccbeep_mute exists, exit silently.
 # If the file contains a Unix timestamp, auto-unmute after that time.
-MUTE_FILE="$HOME/.ccbee_mute"
+MUTE_FILE="$HOME/.ccbeep_mute"
 if [ -f "$MUTE_FILE" ]; then
     expiry="$(cat "$MUTE_FILE" 2>/dev/null || true)"
     if [ -n "$expiry" ] && [ "$expiry" -gt 0 ] 2>/dev/null; then

@@ -8,7 +8,7 @@
 #   ./mute.sh 1d        Mute for 1 day
 set -euo pipefail
 
-MUTE_FILE="$HOME/.ccbee_mute"
+MUTE_FILE="$HOME/.ccbeep_mute"
 
 if [ -f "$MUTE_FILE" ]; then
     echo "Already muted. To unmute: ./unmute.sh"

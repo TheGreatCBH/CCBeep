@@ -1,5 +1,5 @@
 {
-  "name": "ccbee",
+  "name": "ccbeep",
   "description": "Sound notifications for Claude Code — plays a chime when tasks complete and a warning when they fail, so you don't have to watch the terminal.",
   "version": "1.0.0",
   "hooks": {
@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/ccbee.sh complete",
+            "command": "${CLAUDE_PLUGIN_ROOT}/ccbeep.sh complete",
             "async": true
           }
         ]
@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/ccbee.sh stop",
+            "command": "${CLAUDE_PLUGIN_ROOT}/ccbeep.sh stop",
             "async": true
           }
         ]

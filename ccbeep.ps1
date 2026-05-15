@@ -1,18 +1,18 @@
 # CCBeep - Sound notifications for Claude Code events
-# https://github.com/your-username/CCBeepp
+# https://github.com/your-username/CCBeep
 #
 # Native PowerShell version for Windows.
 #
 # Usage:
-#   powershell -NoProfile -File ccbee.ps1 -Event prompt
-#   powershell -NoProfile -File ccbee.ps1 -Event complete
-#   powershell -NoProfile -File ccbee.ps1 -Event error
-#   powershell -NoProfile -File ccbee.ps1 -Event stop   (reads stdin JSON)
+#   powershell -NoProfile -File ccbeep.ps1 -Event prompt
+#   powershell -NoProfile -File ccbeep.ps1 -Event complete
+#   powershell -NoProfile -File ccbeep.ps1 -Event error
+#   powershell -NoProfile -File ccbeep.ps1 -Event stop   (reads stdin JSON)
 #
 # Hook integration (settings.json):
-#   UserPromptSubmit → powershell -NoProfile -File "...\ccbee.ps1" -Event prompt
-#   Notification     → powershell -NoProfile -File "...\ccbee.ps1" -Event complete
-#   Stop             → powershell -NoProfile -File "...\ccbee.ps1" -Event stop
+#   UserPromptSubmit → powershell -NoProfile -File "...\ccbeep.ps1" -Event prompt
+#   Notification     → powershell -NoProfile -File "...\ccbeep.ps1" -Event complete
+#   Stop             → powershell -NoProfile -File "...\ccbeep.ps1" -Event stop
 
 param(
     [Parameter(Mandatory=$true)]
