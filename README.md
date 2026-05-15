@@ -1,5 +1,7 @@
 # CCBeep
 
+[English](#ccbeep) &nbsp;|&nbsp; [中文说明](#中文说明)
+
 Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or hits an error, without watching the terminal.
 
 ## Supported Platforms
