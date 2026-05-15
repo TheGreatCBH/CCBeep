@@ -2,7 +2,7 @@
 
 [English](#ccbeep) &nbsp;|&nbsp; [中文说明](#中文说明)
 
-Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or hits an error, without watching the terminal.
+Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or needs your approval, without watching the terminal.
 
 ## Supported Platforms
 
@@ -17,7 +17,7 @@ Sound notifications for [Claude Code](https://claude.ai/code) — know when Clau
 ### Method 1: One-command install
 
 ```bash
-git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.sh
+git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 ```
 
 The installer automatically detects paths, backs up your settings, and merges the hooks.
@@ -31,7 +31,7 @@ Add the marketplace and enable the plugin in `~/.claude/settings.json`:
   "extraKnownMarketplaces": {
     "ccbeep": {
       "source": "github",
-      "repo": "your-username/CCBeep"
+      "repo": "TheGreatCBH/CCBeep"
     }
   },
   "enabledPlugins": {
@@ -49,6 +49,14 @@ Add directly to `~/.claude/settings.json`:
 ```json
 {
   "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbeep.sh prompt" }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",
@@ -92,8 +100,6 @@ No need to edit the script. Three ways to customize:
 # Or interactive (terminal only):
 ./configure.sh
 ```
-
-### 1. Persistent config (recommended)
 
 ### 1. Persistent config (recommended)
 
@@ -161,9 +167,12 @@ Mute state is stored in `~/.ccbeep_mute` — delete it manually to unmute from a
 
 | Event | Hook | Sound | When |
 |-------|------|-------|------|
-| **Task complete** | `Notification` | Pleasant two-tone chime | Task finishes successfully |
+| **Approval needed** | `PermissionRequest` | Prompt chime (Purr) | Claude needs your yes/no on a tool |
+| **Task complete** | `Notification` | Completion chime | Task finishes successfully |
 | **Task stop (success)** | `Stop` | Completion chime | Agent stops normally |
 | **Task stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
+
+The `PermissionRequest` hook fires exactly when a permission dialog is about to appear — zero false positives, no settings-file parsing needed.
 
 The `Stop` hook receives JSON on stdin. CCBeep reads the `reason` field and picks the right sound automatically.
 
@@ -199,13 +208,13 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 ### CCBeep — Claude Code 声音通知工具
 
-让 Claude Code 在任务完成或中断时自动发出提示音，不用盯着终端也能知道状态变化。
+让 Claude Code 在任务完成、出错或需要人工确认时自动发出提示音，不用盯着终端也能知道状态变化。
 
 ### 安装方式
 
 **方式一：一键安装**
 ```bash
-git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.sh
+git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 ```
 
 **方式二：作为插件安装**
@@ -214,7 +223,7 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.
 ```json
 {
   "extraKnownMarketplaces": {
-    "ccbeep": { "source": "github", "repo": "your-username/CCBeep" }
+    "ccbeep": { "source": "github", "repo": "TheGreatCBH/CCBeep" }
   },
   "enabledPlugins": {
     "ccbeep@ccbeep": true
@@ -272,9 +281,12 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.
 
 | 事件 | Hook | 声音 | 触发时机 |
 |------|------|------|----------|
-| 任务完成 | `Notification` | 悦耳双音阶 | 任务成功完成 |
+| **需要人工确认** | `PermissionRequest` | 提示音 (Purr) | Claude 需要你批准某个工具操作 |
+| 任务完成 | `Notification` | 完成音 | 任务成功完成 |
 | 正常停止 | `Stop` | 完成音 | Agent 正常结束 |
 | 运行中断 | `Stop` | 低沉警告音 | 任务出错或中断 |
+
+`PermissionRequest` Hook 在权限确认对话框出现时精准触发，零误报，无需解析任何配置文件。
 
 ### 卸载
 

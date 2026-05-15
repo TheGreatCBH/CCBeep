@@ -3,6 +3,19 @@
 
   "hooks": {
 
+    "_comment_PermissionRequest": "Fires when a permission dialog is about to appear — plays a prompt sound.",
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<CCBEEP_DIR>/ccbeep.sh prompt"
+          }
+        ]
+      }
+    ],
+
     "_comment_Notification": "Fires on desktop notification events — plays a completion chime.",
     "Notification": [
       {

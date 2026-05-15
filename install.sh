@@ -54,6 +54,17 @@ else:
 
 # Hooks to install
 new_hooks = {
+    "PermissionRequest": [
+        {
+            "matcher": "",
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": f"{ccbeep_dir}/ccbeep.sh prompt"
+                }
+            ]
+        }
+    ],
     "Notification": [
         {
             "matcher": "",
@@ -106,6 +117,7 @@ with open(settings_file, "w") as f:
     f.write("\n")
 
 print("\033[0;32mHooks installed successfully.\033[0m")
+print(f"  PermissionRequest → approval prompt sound")
 print(f"  Notification → task complete sound")
 print(f"  Stop         → task stop (auto error/success)")
 PYEOF

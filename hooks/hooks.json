@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/ccbeep.sh prompt"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",

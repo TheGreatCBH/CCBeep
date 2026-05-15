@@ -73,8 +73,8 @@ sound_macos() {
         case "$event" in
             complete) sound_name="Purr"  ;;
             error)    sound_name="Basso" ;;
-            prompt)   sound_name="Glass" ;;
-            *)        sound_name="Glass" ;;
+            prompt)   sound_name="Purr"  ;;
+            *)        sound_name="Purr"  ;;
         esac
     fi
 
@@ -127,8 +127,8 @@ sound_linux() {
         case "$event" in
             complete) sound_file="$sound_dir/complete.oga"   ;;
             error)    sound_file="$sound_dir/dialog-error.oga" ;;
-            prompt)   sound_file="$sound_dir/message.oga"    ;;
-            *)        sound_file="$sound_dir/message.oga"    ;;
+            prompt)   sound_file="$sound_dir/complete.oga"  ;;
+            *)        sound_file="$sound_dir/complete.oga"  ;;
         esac
     fi
 
@@ -157,9 +157,9 @@ sound_windows() {
     else
         case "$event" in
             complete) spec="1000:200,1200:300" ;;
-            error)    spec="400:500"   ;;
-            prompt)   spec="800:200"   ;;
-            *)        spec="800:200"   ;;
+            error)    spec="400:500"            ;;
+            prompt)   spec="1000:200,1200:300"  ;;
+            *)        spec="1000:200,1200:300"  ;;
         esac
     fi
 
