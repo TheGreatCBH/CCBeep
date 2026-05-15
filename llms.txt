@@ -1,0 +1,34 @@
+# CCBeep
+
+CCBeep is a zero-dependency sound notification plugin for Claude Code.
+
+## Summary
+
+CCBeep plays audible alerts when Claude Code needs user approval or finishes a response. It is designed for developers running long Claude Code sessions who want to know when Claude needs attention without watching the terminal.
+
+It hooks into Claude Code's native event system using the `PermissionRequest` and `Stop` hooks. Sound playback uses built-in OS tools — no external packages or background services required.
+
+## Main use cases
+
+- Get a sound alert when Claude Code presents an interactive approval prompt
+- Hear when Claude Code finishes a response or stops running
+- Step away from the terminal without missing permission prompts
+- Add cross-platform audio notifications to Claude Code hooks with no extra dependencies
+
+## Key features
+
+- PermissionRequest hook support — plays a sound for interactive approval prompts
+- Stop hook support — plays a sound when the Claude Code agent stops
+- Zero external dependencies — built-in OS audio tools only (afplay, paplay/aplay, PowerShell)
+- Cross-platform: macOS, Linux, and Windows
+- Custom sounds via ~/.ccbeep.json or --sound flag
+- Mute and timed mute (mute.sh / unmute.sh)
+- Install via script, Claude Code plugin, or manual hook configuration
+
+## Keywords
+
+Claude Code notification, Claude Code sound alert, Claude Code permission prompt, Claude Code approval reminder, Claude Code hooks, Claude Code plugin, terminal notification, AI coding agent notification, long-running Claude Code task alert, zero-dependency Claude Code plugin, PermissionRequest hook, Stop hook
+
+## Repository
+
+https://github.com/TheGreatCBH/CCBeep

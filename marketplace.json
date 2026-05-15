@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "ccbeep",
-      "description": "Sound notifications for Claude Code — plays a chime when tasks complete and a warning when they fail, so you don't have to watch the terminal. Zero dependencies, works on macOS / Linux / Windows.",
+      "description": "Zero-dependency sound notifications for Claude Code. Plays audible alerts via PermissionRequest and Stop hooks — know when Claude needs approval or has finished, without watching the terminal. macOS / Linux / Windows.",
       "version": "1.0.0",
       "source": "./",
       "strict": false

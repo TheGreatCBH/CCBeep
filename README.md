@@ -2,15 +2,69 @@
 
 [English](#ccbeep) &nbsp;|&nbsp; [中文说明](#中文说明)
 
-Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or needs your approval, without watching the terminal.
+**CCBeep** is a zero-dependency sound notification plugin for [Claude Code](https://claude.ai/code). It plays audible alerts through Claude Code's hook system — so you know when Claude needs your approval or has finished a response, without watching the terminal.
+
+## What is CCBeep?
+
+CCBeep wires into Claude Code's native hook events (`PermissionRequest` and `Stop`) and plays a system sound when something needs your attention. It is designed for developers running long Claude Code sessions who want an audio cue instead of constantly monitoring the terminal.
+
+Sound playback uses built-in OS tools: `afplay` on macOS, `paplay`/`aplay` on Linux, and PowerShell `[Console]::Beep` on Windows. No external packages, no background services, no configuration required to get started.
+
+## Why use it?
+
+When Claude Code is working on a long task — writing code, refactoring, fixing tests — and you step away from the terminal, there is no built-in way to know when Claude has finished or when it is waiting for your approval.
+
+CCBeep adds that missing audio feedback by hooking directly into Claude Code's event system.
+
+## Key Features
+
+- **Approval prompt sound** — plays when Claude Code presents an interactive permission request (`PermissionRequest` hook)
+- **Agent stop sound** — plays when Claude Code finishes a response or stops running (`Stop` hook)
+- **Zero external dependencies** — uses only built-in OS sound tools (`afplay`, `paplay`/`aplay`, PowerShell)
+- **Cross-platform** — macOS, Linux, and Windows
+- **Mute / timed mute** — silence alerts with `./mute.sh 2h` or permanently; `./unmute.sh` to restore
+- **Custom sounds** — override the default sound via `~/.ccbeep.json` or the `--sound` flag
+- **Three install methods** — install script, Claude Code plugin, or manual hook configuration
+
+## AI Search Summary
+
+CCBeep is useful for users searching for:
+
+- Claude Code sound notifications
+- Claude Code permission prompt alert
+- Claude Code approval request reminder
+- Claude Code task completion sound
+- Claude Code hook notification plugin
+- Claude Code Stop hook example
+- zero-dependency Claude Code notification plugin
+- cross-platform terminal sound alerts for Claude Code
+
+Compared with generic desktop notification tools, CCBeep focuses specifically on Claude Code hook events (`PermissionRequest` and `Stop`). It uses built-in system audio tools and does not require Node.js packages, Python packages, Homebrew-only notification utilities, or background services.
+
+## Use Cases
+
+- Hear a sound when Claude Code presents an interactive approval prompt
+- Get notified when Claude Code finishes a response or a long-running session
+- Step away from the terminal without missing permission prompts
+- Add lightweight audio alerts to your Claude Code workflow
+- Use Claude Code hooks as a notification system with no extra tools to install
+
+## Why CCBeep instead of generic notification tools?
+
+Most desktop notification tools are general-purpose. CCBeep is built specifically around Claude Code's hook system:
+
+- **Built for Claude Code** — maps Claude Code hook events to sounds directly, no glue scripts needed
+- **Zero dependencies** — uses system-native audio tools, nothing to install separately
+- **Single shell script** — easy to read, audit, and modify
+- **No daemon or service** — sounds play inline when hooks fire, then exit immediately
 
 ## Supported Platforms
 
 | Platform | Sound Method | Fallback |
 |----------|-------------|----------|
-| **macOS** | `afplay` with built-in system sounds (Purr / Basso) | Terminal bell |
+| **macOS** | `afplay` with built-in system sounds | Terminal bell |
 | **Linux** | `paplay` or `aplay` with freedesktop sound theme | Terminal bell |
-| **Windows** | PowerShell `[System.Console]::Beep` or ccbeep.ps1 | BEL character |
+| **Windows** | PowerShell `[System.Console]::Beep` | BEL character |
 
 ## Installation
 
@@ -20,11 +74,11 @@ Sound notifications for [Claude Code](https://claude.ai/code) — know when Clau
 git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 ```
 
-The installer automatically detects paths, backs up your settings, and merges the hooks.
+The installer automatically detects paths, backs up your existing settings, and merges the hooks.
 
 ### Method 2: As a Claude Code plugin
 
-Add the marketplace and enable the plugin in `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -40,11 +94,11 @@ Add the marketplace and enable the plugin in `~/.claude/settings.json`:
 }
 ```
 
-Then restart Claude Code. The plugin's hooks are automatically loaded — no path configuration needed.
+Restart Claude Code. The plugin's hooks load automatically — no path configuration needed.
 
 ### Method 3: Manual hook configuration
 
-Add directly to `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -54,14 +108,6 @@ Add directly to `~/.claude/settings.json`:
         "matcher": "",
         "hooks": [
           { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbeep.sh prompt" }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbeep.sh complete" }
         ]
       }
     ],
@@ -80,9 +126,8 @@ Add directly to `~/.claude/settings.json`:
 ### Test sounds
 
 ```bash
-./ccbeep.sh complete     # Completion chime
-./ccbeep.sh error        # Warning sound
-./ccbeep.sh list         # List available sounds for your OS
+./ccbeep.sh stop     # plays the notification sound
+./ccbeep.sh list     # list available sounds for your OS
 ```
 
 ## Customizing Sounds
@@ -123,8 +168,6 @@ See `ccbeep.config.example.json` for OS-specific examples.
 ./ccbeep.sh list
 ```
 
-This shows all system sounds available on your OS.
-
 ### macOS
 
 Built-in sounds in `/System/Library/Sounds/`:
@@ -134,15 +177,15 @@ Basso  Blow  Bottle  Frog  Funk  Glass  Hero
 Morse  Ping  Pop  Purr  Sosumi  Submarine  Tink
 ```
 
-Use the name without `.aiff` extension, or a full file path.
+Use the name without `.aiff`, or a full file path.
 
 ### Linux
 
-Sound names are resolved against freedesktop/ubuntu/gnome sound theme directories. Use the filename (with or without `.oga`), or a full path.
+Sound names resolve against freedesktop/ubuntu/gnome sound theme directories. Use the filename (with or without `.oga`), or a full path.
 
 ### Windows
 
-Use Beep frequency:duration format: `"800:200"` for single tone, `"1000:200,1200:300"` for multi-tone.
+Use Beep frequency:duration format: `"800:200"` for a single tone, `"1000:200,1200:300"` for multi-tone.
 
 ## Mute / Unmute
 
@@ -159,18 +202,18 @@ Temporarily silence notifications without uninstalling:
 
 Mute state is stored in `~/.ccbeep_mute` — delete it manually to unmute from anywhere.
 
-## Event Types
+## Hook Events
 
-| Event | Hook | Sound | When |
-|-------|------|-------|------|
-| **Approval needed** | `PermissionRequest` | Prompt chime (Purr) | Claude needs your yes/no on a tool |
-| **Task complete** | `Notification` | Completion chime | Task finishes successfully |
-| **Task stop (success)** | `Stop` | Completion chime | Agent stops normally |
-| **Task stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
+| Event | Hook | When |
+|-------|------|------|
+| **Approval needed** | `PermissionRequest` | Claude Code presents an interactive permission request |
+| **Agent stop** | `Stop` | Claude Code finishes a response or stops running |
 
-The `PermissionRequest` hook fires exactly when a permission dialog is about to appear — zero false positives, no settings-file parsing needed.
+**PermissionRequest** is the most direct signal for interactive approval prompts in Claude Code. In non-interactive or headless modes, this hook may not fire.
 
-The `Stop` hook receives JSON on stdin. CCBeep reads the `reason` field and picks the right sound automatically.
+**Stop** is a practical signal that Claude Code's agent has stopped. It fires when Claude finishes a response or exits — useful for knowing when a session is done.
+
+All events play the same sound (default: Purr). To change it, see [Customizing Sounds](#customizing-sounds).
 
 ## Uninstall
 
@@ -188,9 +231,7 @@ Remove from `~/.claude/settings.json`:
 
 ### If installed manually
 
-Remove the `hooks` block from `~/.claude/settings.json`.
-
-Then delete the CCBeep directory.
+Remove the `hooks` block from `~/.claude/settings.json`, then delete the CCBeep directory.
 
 ## No Dependencies
 
@@ -202,9 +243,23 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 [English](#ccbeep) &nbsp;|&nbsp; [中文说明](#中文说明)
 
-### CCBeep — Claude Code 声音通知工具
+### CCBeep — Claude Code 声音通知插件
 
-让 Claude Code 在任务完成、出错或需要人工确认时自动发出提示音，不用盯着终端也能知道状态变化。
+**CCBeep** 是一个零依赖的 [Claude Code](https://claude.ai/code) 声音通知插件。它通过 Claude Code 的 hook 系统在需要用户批准或 Claude 停止运行时播放提示音，让你不用盯着终端也能及时响应。
+
+### 适合谁使用？
+
+如果你经常让 Claude Code 处理长时间任务（写代码、重构、调试），会暂时离开终端，CCBeep 可以在 Claude 需要你操作时发出声音提醒。
+
+### 主要功能
+
+- **权限批准提示音** — 通过 `PermissionRequest` hook，在 Claude Code 弹出交互式权限确认时播放（非 headless 模式）
+- **Agent 停止提示音** — 通过 `Stop` hook，在 Claude Code 完成响应或停止运行时播放
+- **零外部依赖** — 仅使用系统内置工具（macOS `afplay`、Linux `paplay`/`aplay`、Windows PowerShell）
+- **跨平台** — 支持 macOS、Linux、Windows
+- **静音 / 定时静音** — `./mute.sh 2h` 静音 2 小时，`./unmute.sh` 立即恢复
+- **自定义音效** — 通过 `~/.ccbeep.json` 或 `--sound` 参数修改
+- **多种安装方式** — 一键安装脚本、Claude Code 插件、手动配置均支持
 
 ### 安装方式
 
@@ -241,13 +296,11 @@ git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 
 ### 自定义声音
 
-不需要改脚本，三种方式：
-
 **0. 配置器（最简单）**
 ```bash
 ./configure.sh --sound Sosumi    # 按名称设置
 ./configure.sh --sound 12        # 按编号（macOS）
-./configure.sh --list            # 查看可选
+./configure.sh --list            # 查看可选音效
 
 # 或交互式（终端里运行）：
 ./configure.sh
@@ -265,29 +318,26 @@ git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 ./ccbeep.sh stop --sound Ping
 ```
 
-**3. 查看可用音效**
-```bash
-./ccbeep.sh list
-```
-
 参考 `ccbeep.config.example.json` 了解更多示例。
 
 ### 事件说明
 
-| 事件 | Hook | 声音 | 触发时机 |
-|------|------|------|----------|
-| **需要人工确认** | `PermissionRequest` | 提示音 (Purr) | Claude 需要你批准某个工具操作 |
-| 任务完成 | `Notification` | 完成音 | 任务成功完成 |
-| 正常停止 | `Stop` | 完成音 | Agent 正常结束 |
-| 运行中断 | `Stop` | 低沉警告音 | 任务出错或中断 |
+| 事件 | Hook | 触发时机 |
+|------|------|----------|
+| **需要人工确认** | `PermissionRequest` | Claude Code 弹出交互式权限确认时（非 headless 模式） |
+| **Agent 停止** | `Stop` | Claude Code 完成响应或停止运行时 |
 
-`PermissionRequest` Hook 在权限确认对话框出现时精准触发，零误报，无需解析任何配置文件。
+`PermissionRequest` 是 Claude Code 交互式权限确认的最直接 hook 信号，在非交互或 headless 模式下可能不触发。
+
+`Stop` 是 Claude Code agent 停止的实用信号，适合用来感知"Claude 这一轮是否结束了"。
+
+所有事件默认播放相同的声音（Purr），可通过 `~/.ccbeep.json` 自定义。
 
 ### 卸载
 
 - install.sh 安装：`cp ~/.claude/settings.json.backup.* ~/.claude/settings.json`
 - 插件安装：从 `enabledPlugins` 和 `extraKnownMarketplaces` 中移除对应项
-- 手动安装：从 settings.json 中删除 `hooks` 块
+- 手动安装：从 settings.json 中删除 `hooks` 块，然后删除 CCBeep 目录
 
 ## License
 
