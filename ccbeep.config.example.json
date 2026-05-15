@@ -2,22 +2,18 @@
   "_description": "CCBeep sound customization — copy to ~/.ccbeep.json and edit. Use './ccbeep.sh list' to see available sounds for your OS.",
 
   "_macos_example": {
-    "complete": "Sosumi",
-    "error": "Funk"
+    "sound": "Sosumi"
   },
 
   "_linux_example": {
-    "complete": "complete",
-    "error": "dialog-error"
+    "sound": "complete"
   },
 
   "_windows_example": {
-    "complete": "1000:200,1200:300",
-    "error": "400:500"
+    "sound": "1000:200,1200:300"
   },
 
   "_advanced_example": {
-    "complete": "/path/to/custom/sound.wav",
-    "error": "/path/to/custom/alert.wav"
+    "sound": "/path/to/custom/sound.wav"
   }
 }

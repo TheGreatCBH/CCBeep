@@ -92,10 +92,9 @@ No need to edit the script. Three ways to customize:
 ### 0. Interactive configurator (easiest)
 
 ```bash
-# One command:
-./configure.sh --complete Sosumi --error Funk
-./configure.sh --complete 12 --error 5        # by number
-./configure.sh --list                         # see options
+./configure.sh --sound Sosumi    # set by name
+./configure.sh --sound 12        # set by number (macOS)
+./configure.sh --list            # see options
 
 # Or interactive (terminal only):
 ./configure.sh
@@ -106,10 +105,7 @@ No need to edit the script. Three ways to customize:
 Create `~/.ccbeep.json`:
 
 ```json
-{
-  "complete": "Sosumi",
-  "error": "Funk"
-}
+{ "sound": "Sosumi" }
 ```
 
 See `ccbeep.config.example.json` for OS-specific examples.
@@ -117,8 +113,8 @@ See `ccbeep.config.example.json` for OS-specific examples.
 ### 2. One-off override
 
 ```bash
-./ccbeep.sh complete --sound Ping
-./ccbeep.sh error   --sound /path/to/custom.wav
+./ccbeep.sh stop --sound Ping
+./ccbeep.sh stop --sound /path/to/custom.wav
 ```
 
 ### 3. Discover available sounds
@@ -249,10 +245,9 @@ git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 
 **0. 配置器（最简单）**
 ```bash
-# 一条命令：
-./configure.sh --complete Sosumi --error Funk
-./configure.sh --complete 12 --error 5        # 按编号
-./configure.sh --list                         # 查看可选
+./configure.sh --sound Sosumi    # 按名称设置
+./configure.sh --sound 12        # 按编号（macOS）
+./configure.sh --list            # 查看可选
 
 # 或交互式（终端里运行）：
 ./configure.sh
@@ -262,12 +257,12 @@ git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 
 创建 `~/.ccbeep.json`：
 ```json
-{ "complete": "Sosumi", "error": "Funk" }
+{ "sound": "Sosumi" }
 ```
 
 **2. 命令行临时覆盖**
 ```bash
-./ccbeep.sh complete --sound Ping
+./ccbeep.sh stop --sound Ping
 ```
 
 **3. 查看可用音效**

@@ -2,11 +2,12 @@
 # CCBeep sound configurator
 #
 # Non-interactive (Claude Code friendly):
-#   ./configure.sh --complete Sosumi --error Funk
-#   ./configure.sh --complete 12 --error 5          (by number)
-#   ./configure.sh --list                            (show sounds)
-#   ./configure.sh --test                            (test current config)
-#   ./configure.sh --reset                           (restore defaults)
+#   ./configure.sh --sound Sosumi      set sound by name
+#   ./configure.sh --sound 12          set sound by number (macOS)
+#   ./configure.sh --sound /path/to/custom.wav
+#   ./configure.sh --list              show available sounds
+#   ./configure.sh --test              play current sound
+#   ./configure.sh --reset             restore default (Purr)
 #
 # Interactive (terminal only):
 #   ./configure.sh
@@ -33,7 +34,6 @@ fi
 # ── Helpers ────────────────────────────────────────────────────────────────────
 resolve_sound() {
     local input="$1"
-    # Number → name (macOS only)
     if [[ "$input" =~ ^[0-9]+$ ]] && [ "$OS" = "macos" ] && [ "$input" -ge 1 ] && [ "$input" -le "${#SOUNDS[@]}" ]; then
         echo "${SOUNDS[$((input-1))]}"
     else
@@ -51,8 +51,8 @@ show_list() {
         done
         echo ""
         echo ""
-        echo "Usage: ./configure.sh --complete NAME|NUM --error NAME|NUM"
-        echo "       ./configure.sh --complete /path/to/custom.wav"
+        echo "Usage: ./configure.sh --sound NAME|NUM"
+        echo "       ./configure.sh --sound /path/to/custom.wav"
     elif [ "$OS" = "linux" ]; then
         for d in /usr/share/sounds/freedesktop/stereo \
                  /usr/share/sounds/ubuntu/stereo \
@@ -63,32 +63,28 @@ show_list() {
             fi
         done
         echo ""
-        echo "Usage: ./configure.sh --complete NAME --error NAME"
+        echo "Usage: ./configure.sh --sound NAME"
     else
         echo "  Beep format: frequency:duration  (e.g. 800:200)"
         echo "  Multi-tone:  1000:200,1200:300"
         echo ""
-        echo "Usage: ./configure.sh --complete \"1000:200,1200:300\" --error \"400:500\""
+        echo "Usage: ./configure.sh --sound \"1000:200,1200:300\""
     fi
 }
 
 save_config() {
-    local complete="$1"
-    local error="$2"
-    python3 - "$CONFIG_FILE" "$complete" "$error" << 'PYEOF'
+    local sound="$1"
+    python3 - "$CONFIG_FILE" "$sound" << 'PYEOF'
 import sys, json
 config_file = sys.argv[1]
-complete = sys.argv[2]
-error = sys.argv[3]
+sound = sys.argv[2]
 config = {}
 try:
     with open(config_file) as f:
         config = json.load(f)
 except: pass
-if complete:
-    config["complete"] = complete
-if error:
-    config["error"] = error
+if sound:
+    config["sound"] = sound
 with open(config_file, "w") as f:
     json.dump(config, f, indent=2, ensure_ascii=False)
     f.write("\n")
@@ -100,26 +96,21 @@ show_current() {
         echo "Current config:"
         cat "$CONFIG_FILE"
     else
-        echo "No config file yet (using defaults: Purr / Basso)."
+        echo "No config file yet (using default: Purr)."
     fi
     echo ""
 }
 
-# ── Non-interactive mode (--complete / --error / --list / --test) ──────────────
+# ── Non-interactive mode ───────────────────────────────────────────────────────
 if [ $# -gt 0 ]; then
-    complete_val=""
-    error_val=""
+    sound_val=""
     do_list=false
     do_test=false
 
     while [ $# -gt 0 ]; do
         case "$1" in
-            --complete|-c)
-                complete_val="$(resolve_sound "$2")"
-                shift 2
-                ;;
-            --error|-e)
-                error_val="$(resolve_sound "$2")"
+            --sound|-s)
+                sound_val="$(resolve_sound "$2")"
                 shift 2
                 ;;
             --list|-l)
@@ -132,13 +123,12 @@ if [ $# -gt 0 ]; then
                 ;;
             --reset)
                 rm -f "$CONFIG_FILE"
-                echo "Config reset to defaults (Purr / Basso)."
+                echo "Config reset to default (Purr)."
                 exit 0
                 ;;
             *)
                 echo "Unknown flag: $1"
-                echo "Usage: ./configure.sh [--complete SOUND] [--error SOUND] [--list] [--test] [--reset]"
-                echo "Usage: ./configure.sh [--complete SOUND] [--error SOUND] [--list] [--test]"
+                echo "Usage: ./configure.sh [--sound SOUND] [--list] [--test] [--reset]"
                 exit 1
                 ;;
         esac
@@ -150,32 +140,21 @@ if [ $# -gt 0 ]; then
     fi
 
     if $do_test; then
-        echo "Playing complete sound..."
-        "$CCBEEP_DIR/ccbeep.sh" complete
-        sleep 1
-        echo "Playing error sound..."
-        "$CCBEEP_DIR/ccbeep.sh" error
+        echo "Playing current sound..."
+        "$CCBEEP_DIR/ccbeep.sh" stop
         exit 0
     fi
 
-    if [ -n "$complete_val" ] || [ -n "$error_val" ]; then
-        save_config "$complete_val" "$error_val"
+    if [ -n "$sound_val" ]; then
+        save_config "$sound_val"
         show_current
-        echo "Saved. Testing sounds..."
-        if [ -n "$complete_val" ]; then
-            echo "  complete → $(echo "$complete_val")"
-            "$CCBEEP_DIR/ccbeep.sh" complete
-        fi
-        if [ -n "$error_val" ]; then
-            sleep 0.5
-            echo "  error    → $(echo "$error_val")"
-            "$CCBEEP_DIR/ccbeep.sh" error
-        fi
+        echo "Saved. Testing..."
+        "$CCBEEP_DIR/ccbeep.sh" stop
         echo "Done."
         exit 0
     fi
 
-    echo "Nothing to do. Use --complete / --error / --list / --test / --reset"
+    echo "Nothing to do. Use --sound / --list / --test / --reset"
     exit 0
 fi
 
@@ -188,49 +167,33 @@ show_current
 show_list
 echo ""
 echo "  ── Quick setup (non-interactive) ──"
-echo "  ./configure.sh --complete NAME|NUM --error NAME|NUM"
+echo "  ./configure.sh --sound NAME|NUM"
 echo "  ./configure.sh --list          show sounds"
-echo "  ./configure.sh --test          test current config"
-echo "  ./configure.sh --reset         restore defaults"
+echo "  ./configure.sh --test          test current sound"
+echo "  ./configure.sh --reset         restore default"
 echo ""
 
-# Pick complete sound
-current_complete=""
-[ -f "$CONFIG_FILE" ] && current_complete="$(python3 -c "
+current_sound=""
+[ -f "$CONFIG_FILE" ] && current_sound="$(python3 -c "
 import json
 with open('$CONFIG_FILE') as f:
-    print(json.load(f).get('complete',''))
+    c = json.load(f)
+    print(c.get('sound') or c.get('stop', ''))
 " 2>/dev/null || echo "")"
 
-printf "Sound for complete [%s]: " "${current_complete:-Purr}" >&2
+printf "Sound [%s]: " "${current_sound:-Purr}" >&2
 read -r choice
-complete_val="$(resolve_sound "${choice:-}")"
+sound_val="$(resolve_sound "${choice:-}")"
 
-# Pick error sound
-current_error=""
-[ -f "$CONFIG_FILE" ] && current_error="$(python3 -c "
-import json
-with open('$CONFIG_FILE') as f:
-    print(json.load(f).get('error',''))
-" 2>/dev/null || echo "")"
-
-printf "Sound for error    [%s]: " "${current_error:-Basso}" >&2
-read -r choice
-error_val="$(resolve_sound "${choice:-}")"
-
-save_config "${complete_val:-$current_complete}" "${error_val:-$current_error}"
+save_config "${sound_val:-$current_sound}"
 echo ""
 echo "Saved."
 echo ""
 
-printf "Test sounds? [Y/n]: " >&2
+printf "Test sound? [Y/n]: " >&2
 read -r yn
 if [ "$yn" != "n" ] && [ "$yn" != "N" ]; then
-    echo "Playing complete..."
-    "$CCBEEP_DIR/ccbeep.sh" complete
-    sleep 1
-    echo "Playing error..."
-    "$CCBEEP_DIR/ccbeep.sh" error
+    "$CCBEEP_DIR/ccbeep.sh" stop
 fi
 echo ""
 echo "Done."

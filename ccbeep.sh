@@ -51,7 +51,7 @@ import json
 try:
     with open('$CONFIG_FILE') as f:
         config = json.load(f)
-    val = config.get('${event}', '')
+    val = config.get('${event}') or config.get('sound', '')
     if isinstance(val, str):
         print(val)
 except:
