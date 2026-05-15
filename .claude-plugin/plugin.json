@@ -1,31 +1,11 @@
 {
   "name": "ccbeep",
-  "description": "Sound notifications for Claude Code — plays a chime when tasks complete and a warning when they fail, so you don't have to watch the terminal.",
+  "description": "Sound notifications for Claude Code — plays a chime when tasks complete and a warning when they fail, so you don't have to watch the terminal. Zero dependencies, works on macOS / Linux / Windows.",
   "version": "1.0.0",
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/ccbeep.sh complete",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/ccbeep.sh stop",
-            "async": true
-          }
-        ]
-      }
-    ]
-  }
+  "author": {
+    "name": "TheGreatCBH"
+  },
+  "homepage": "https://github.com/TheGreatCBH/CCBeep",
+  "repository": "https://github.com/TheGreatCBH/CCBeep",
+  "license": "MIT"
 }
