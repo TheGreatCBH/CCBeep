@@ -1,55 +1,35 @@
 # CCBee
 
-Sound notifications for [Claude Code](https://claude.ai/code) — know what Claude is doing without watching the terminal.
-
-When Claude Code is waiting for your input, finishes a task, or hits an error, CCBee plays a distinct sound so you can stay focused on other work.
+Sound notifications for [Claude Code](https://claude.ai/code) — know when Claude finishes a task or hits an error, without watching the terminal.
 
 ## Supported Platforms
 
 | Platform | Sound Method | Fallback |
 |----------|-------------|----------|
-| **macOS** | `afplay` with built-in system sounds (Glass / Purr / Basso) | Terminal bell |
+| **macOS** | `afplay` with built-in system sounds (Purr / Basso) | Terminal bell |
 | **Linux** | `paplay` or `aplay` with freedesktop sound theme | Terminal bell |
 | **Windows** | PowerShell `[System.Console]::Beep` or ccbee.ps1 | BEL character |
 
 ## Quick Start
 
-### 1. Clone & install
+### One-command install
 
 ```bash
-git clone https://github.com/your-username/CCBeep.git
-cd CCBee
-chmod +x ccbee.sh
+git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
 ```
 
-### 2. Test sounds
+That's it. The installer automatically:
+- Detects the CCBee directory
+- Backs up your existing `~/.claude/settings.json`
+- Merges the hooks into your settings
 
-```bash
-./ccbee.sh prompt       # Gentle notification
-./ccbee.sh complete     # Completion chime
-./ccbee.sh error        # Warning sound
-```
+### Manual install
 
-### 3. Configure hooks
-
-Add the following to your Claude Code settings:
-
-**User-level** (`~/.claude/settings.json`):
+If you prefer to configure manually, add the following to `~/.claude/settings.json`:
 
 ```json
 {
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "",
@@ -76,29 +56,13 @@ Add the following to your Claude Code settings:
 }
 ```
 
-Replace `/ABSOLUTE/PATH/TO/CCBeep` with the actual path (e.g., `/Users/you/projects/CCBeep`).
-
-If you already have other settings, merge only the `"hooks"` block — do not replace your entire file. See `settings.example.json` for a complete reference.
+Replace `/ABSOLUTE/PATH/TO/CCBeep` with the actual path. If you already have settings, merge only the `"hooks"` block.
 
 ### Windows (PowerShell)
-
-On Windows with PowerShell, use the `.ps1` script with the `powershell` shell type:
 
 ```json
 {
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event prompt",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "matcher": "",
@@ -129,16 +93,31 @@ On Windows with PowerShell, use the `.ps1` script with the `powershell` shell ty
 
 You can also run `ccbee.sh` under Git Bash or WSL on Windows.
 
+### Test sounds
+
+```bash
+./ccbee.sh complete     # Completion chime
+./ccbee.sh error        # Warning sound
+```
+
 ## Event Types
 
 | Event | Hook | Sound | When |
 |-------|------|-------|------|
-| **Prompt** | `UserPromptSubmit` | Short notification ding | User submits a prompt, system acknowledges |
-| **Complete** | `Notification` | Pleasant two-tone chime | Task finishes successfully |
-| **Stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
-| **Stop (success)** | `Stop` | Completion chime | Task ends normally |
+| **Task complete** | `Notification` | Pleasant two-tone chime | Task finishes successfully |
+| **Task stop (success)** | `Stop` | Completion chime | Agent stops normally |
+| **Task stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
 
-The `Stop` hook receives JSON from Claude Code on stdin. CCBee reads this JSON and automatically picks the right sound based on the `reason` field (`"completed"` → complete, `"error"` / `"interrupted"` → error).
+The `Stop` hook receives JSON from Claude Code on stdin. CCBee reads the `reason` field and picks the right sound automatically (`"completed"` → complete, `"error"` / `"interrupted"` → error).
+
+## Uninstall
+
+```bash
+# Restore from the backup created by install.sh
+cp ~/.claude/settings.json.backup.* ~/.claude/settings.json
+```
+
+Or manually remove the `hooks` block from `~/.claude/settings.json`.
 
 ## Customizing Sounds
 
@@ -151,11 +130,7 @@ Basso  Blow  Bottle  Frog  Funk  Glass  Hero
 Morse  Ping  Pop  Purr  Sosumi  Submarine  Tink
 ```
 
-Edit `ccbee.sh` and change the sound names in the `sound_macos()` function, or pass a custom argument:
-
-```bash
-./ccbee.sh custom /System/Library/Sounds/Sosumi.aiff
-```
+Edit `ccbee.sh` and change the sound names in the `sound_macos()` function.
 
 ### Linux
 
@@ -165,21 +140,19 @@ Available sounds depend on your sound theme. Common paths:
 - `/usr/share/sounds/ubuntu/stereo/`
 - `/usr/share/sounds/gnome/default/alerts/`
 
-Edit `ccbee.sh` to change the paths in `sound_linux()`, or install additional sound themes.
-
-If PulseAudio is not available, the script falls back to `aplay` (ALSA) or terminal bell (`echo -e '\a'`).
+Edit `ccbee.sh` to change the paths in `sound_linux()`. Falls back to `aplay` (ALSA) or terminal bell if PulseAudio is unavailable.
 
 ### Windows
 
-Edit `ccbee.ps1` and change the `Frequency` and `Duration` parameters in the `Play-Beep` calls. Higher frequency = higher pitch, higher duration = longer beep.
+Edit `ccbee.ps1` and change the `Frequency` and `Duration` parameters in the `Play-Beep` calls.
 
 ## No Dependencies
 
 CCBee uses only system built-in tools:
 
 - **macOS**: `afplay` (pre-installed)
-- **Linux**: `paplay` (PulseAudio, installed by default on most distros) or `aplay` (ALSA)
-- **Windows**: PowerShell (pre-installed) or `echo -e '\a'` under WSL/Git Bash
+- **Linux**: `paplay` (PulseAudio, default on most distros) or `aplay` (ALSA)
+- **Windows**: PowerShell (pre-installed)
 
 No `pip install`, no `brew install`, no third-party packages.
 
@@ -189,51 +162,32 @@ No `pip install`, no `brew install`, no third-party packages.
 
 ### CCBee — Claude Code 声音通知工具
 
-让 Claude Code 在等待输入、任务完成或中断时自动发出提示音，你不用盯着终端也能知道状态变化。
+让 Claude Code 在任务完成或中断时自动发出提示音，你不用盯着终端也能知道状态变化。
 
-### 快速开始
-
-```bash
-git clone https://github.com/your-username/CCBeep.git
-cd CCBee
-chmod +x ccbee.sh
-```
-
-### 测试声音
+### 一键安装
 
 ```bash
-./ccbee.sh prompt       # 提示音
-./ccbee.sh complete     # 完成音
-./ccbee.sh error        # 错误/警告音
+git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
 ```
 
-### 配置 hooks
-
-在 `~/.claude/settings.json` 中添加（把 `/ABSOLUTE/PATH/TO/CCBeep` 替换为实际路径）：
-
-```json
-{
-  "hooks": {
-    "UserPromptSubmit": [
-      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt" }] }
-    ],
-    "Notification": [
-      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete" }] }
-    ],
-    "Stop": [
-      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop" }] }
-    ]
-  }
-}
-```
+安装脚本会自动：
+- 检测 CCBee 目录
+- 备份现有 `~/.claude/settings.json`
+- 将 hooks 合并到配置文件中
 
 ### 事件说明
 
 | 事件 | Hook | 声音 | 触发时机 |
 |------|------|------|----------|
-| 等待输入 | `UserPromptSubmit` | 短促提示音 | 用户提交 prompt 时 |
 | 任务完成 | `Notification` | 悦耳双音阶 | 任务成功完成 |
+| 正常停止 | `Stop` | 完成音 | Agent 正常结束 |
 | 运行中断 | `Stop` | 低沉警告音 | 任务出错或中断 |
+
+### 卸载
+
+```bash
+cp ~/.claude/settings.json.backup.* ~/.claude/settings.json
+```
 
 ### 自定义声音
 

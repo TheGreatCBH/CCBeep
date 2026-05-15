@@ -10,9 +10,8 @@
 #                            auto-detect error vs complete
 #
 # Hook integration (settings.json):
-#   "UserPromptSubmit": [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh prompt"}]}]
-#   "Notification":     [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh complete"}]}]
-#   "Stop":             [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh stop"}]}]
+#   "Notification": [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh complete"}]}]
+#   "Stop":         [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh stop"}]}]
 set -euo pipefail
 
 # ── OS detection ──────────────────────────────────────────────────────────────

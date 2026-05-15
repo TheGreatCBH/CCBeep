@@ -1,22 +1,9 @@
 {
-  "_description": "CCBee sound notification hooks for Claude Code. Copy the 'hooks' block into your settings.json (user-level: ~/.claude/settings.json, or project-level: <project>/.claude/settings.json). Replace <CCBEEP_DIR> with the absolute path to this project (e.g., /Users/you/projects/CCBeep or C:\\Users\\you\\projects\\CCBeep).",
+  "_description": "CCBee hook configuration reference. Use install.sh for automatic setup, or copy the 'hooks' block into ~/.claude/settings.json manually. Replace <CCBEEP_DIR> with the absolute path to this project.",
 
   "hooks": {
 
-    "_comment_UserPromptSubmit": "Fires when user submits a prompt — plays a gentle sound to acknowledge input received.",
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "<CCBEEP_DIR>/ccbee.sh prompt"
-          }
-        ]
-      }
-    ],
-
-    "_comment_Notification": "Fires on desktop notification events (task complete, etc.) — plays a completion chime.",
+    "_comment_Notification": "Fires on desktop notification events — plays a completion chime.",
     "Notification": [
       {
         "matcher": "",
@@ -29,7 +16,7 @@
       }
     ],
 
-    "_comment_Stop": "Fires when agent stops — the script reads stdin JSON to auto-detect error vs success and play the right sound.",
+    "_comment_Stop": "Fires when agent stops — script reads stdin JSON to auto-detect error vs success.",
     "Stop": [
       {
         "matcher": "",
@@ -43,15 +30,26 @@
     ]
   },
 
-  "_windows_note": "Hook format is identical on Windows when using Git Bash / WSL. For native PowerShell, use 'powershell' as the shell type.",
-  "_windows_hooks_example": {
-    "UserPromptSubmit": [
+  "_windows_example": {
+    "Notification": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event prompt",
+            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event complete",
+            "shell": "powershell"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event stop",
             "shell": "powershell"
           }
         ]
@@ -60,9 +58,7 @@
   },
 
   "_sound_customization": {
-    "_comment": "You can customize sounds by editing the sound names in ccbee.sh.",
     "macOS_available_sounds": ["Basso", "Blow", "Bottle", "Frog", "Funk", "Glass", "Hero", "Morse", "Ping", "Pop", "Purr", "Sosumi", "Submarine", "Tink"],
-    "example_custom_prompt": "ccbee.sh prompt --sound Ping",
-    "example_custom_file": "ccbee.sh custom /path/to/your/sound.wav"
+    "how_to_customize": "Edit the sound names in ccbee.sh — no config file needed."
   }
 }
