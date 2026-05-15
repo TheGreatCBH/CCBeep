@@ -16,21 +16,7 @@
       }
     ],
 
-    "_comment_Notification": "Fires on desktop notification events — plays a completion chime.",
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "<CCBEEP_DIR>/ccbeep.sh complete",
-            "async": true
-          }
-        ]
-      }
-    ],
-
-    "_comment_Stop": "Fires when agent stops — script reads stdin JSON to auto-detect error vs success.",
+    "_comment_Stop":"Fires when agent stops — script reads stdin JSON to auto-detect error vs success.",
     "Stop": [
       {
         "matcher": "",

@@ -65,17 +65,6 @@ new_hooks = {
             ]
         }
     ],
-    "Notification": [
-        {
-            "matcher": "",
-            "hooks": [
-                {
-                    "type": "command",
-                    "command": f"{ccbeep_dir}/ccbeep.sh complete"
-                }
-            ]
-        }
-    ],
     "Stop": [
         {
             "matcher": "",
@@ -118,8 +107,7 @@ with open(settings_file, "w") as f:
 
 print("\033[0;32mHooks installed successfully.\033[0m")
 print(f"  PermissionRequest → approval prompt sound")
-print(f"  Notification → task complete sound")
-print(f"  Stop         → task stop (auto error/success)")
+print(f"  Stop              → task stop (auto error/success)")
 PYEOF
 
 echo ""
