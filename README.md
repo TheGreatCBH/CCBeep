@@ -195,6 +195,8 @@ Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShe
 
 ## 中文说明
 
+[English](#ccbeep) &nbsp;|&nbsp; [中文说明](#中文说明)
+
 ### CCBeep — Claude Code 声音通知工具
 
 让 Claude Code 在任务完成或中断时自动发出提示音，不用盯着终端也能知道状态变化。
