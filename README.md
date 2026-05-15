@@ -72,7 +72,59 @@ Add directly to `~/.claude/settings.json`:
 ```bash
 ./ccbeep.sh complete     # Completion chime
 ./ccbeep.sh error        # Warning sound
+./ccbeep.sh list         # List available sounds for your OS
 ```
+
+## Customizing Sounds
+
+No need to edit the script. Three ways to customize:
+
+### 1. Persistent config (recommended)
+
+Create `~/.ccbeep.json`:
+
+```json
+{
+  "complete": "Sosumi",
+  "error": "Funk"
+}
+```
+
+See `ccbeep.config.example.json` for OS-specific examples.
+
+### 2. One-off override
+
+```bash
+./ccbeep.sh complete --sound Ping
+./ccbeep.sh error   --sound /path/to/custom.wav
+```
+
+### 3. Discover available sounds
+
+```bash
+./ccbeep.sh list
+```
+
+This shows all system sounds available on your OS.
+
+### macOS
+
+Built-in sounds in `/System/Library/Sounds/`:
+
+```
+Basso  Blow  Bottle  Frog  Funk  Glass  Hero
+Morse  Ping  Pop  Purr  Sosumi  Submarine  Tink
+```
+
+Use the name without `.aiff` extension, or a full file path.
+
+### Linux
+
+Sound names are resolved against freedesktop/ubuntu/gnome sound theme directories. Use the filename (with or without `.oga`), or a full path.
+
+### Windows
+
+Use Beep frequency:duration format: `"800:200"` for single tone, `"1000:200,1200:300"` for multi-tone.
 
 ## Mute / Unmute
 
@@ -119,33 +171,6 @@ Remove the `hooks` block from `~/.claude/settings.json`.
 
 Then delete the CCBeep directory.
 
-## Customizing Sounds
-
-### macOS
-
-Use any built-in system sound from `/System/Library/Sounds/`:
-
-```
-Basso  Blow  Bottle  Frog  Funk  Glass  Hero
-Morse  Ping  Pop  Purr  Sosumi  Submarine  Tink
-```
-
-Edit `ccbeep.sh` and change the sound names in the `sound_macos()` function.
-
-### Linux
-
-Available sounds depend on your sound theme. Common paths:
-
-- `/usr/share/sounds/freedesktop/stereo/`
-- `/usr/share/sounds/ubuntu/stereo/`
-- `/usr/share/sounds/gnome/default/alerts/`
-
-Edit `ccbeep.sh` to change the paths in `sound_linux()`.
-
-### Windows
-
-Edit `ccbeep.ps1` and change the `Frequency` and `Duration` parameters in the `Play-Beep` calls.
-
 ## No Dependencies
 
 Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShell (Windows).
@@ -190,6 +215,29 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.
 
 ./unmute.sh       # 取消静音
 ```
+
+### 自定义声音
+
+不需要改脚本，三种方式：
+
+**1. 配置文件（推荐）**
+
+创建 `~/.ccbeep.json`：
+```json
+{ "complete": "Sosumi", "error": "Funk" }
+```
+
+**2. 命令行临时覆盖**
+```bash
+./ccbeep.sh complete --sound Ping
+```
+
+**3. 查看可用音效**
+```bash
+./ccbeep.sh list
+```
+
+参考 `ccbeep.config.example.json` 了解更多示例。
 
 ### 事件说明
 
