@@ -3,16 +3,14 @@
 # https://github.com/TheGreatCBH/CCBeep
 #
 # Usage:
-#   ccbeep.sh complete               Play completion sound (with defaults)
-#   ccbeep.sh complete --sound Ping  Override sound for this call
-#   ccbeep.sh error                  Play error sound
-#   ccbeep.sh stop                   Read stdin JSON, auto-detect complete/error
+#   ccbeep.sh <event>                Play sound (complete / stop / prompt / ...)
+#   ccbeep.sh <event> --sound Ping   Override sound for this call
 #   ccbeep.sh list                   List available sounds for current OS
 #
 # Persistent customization: create ~/.ccbeep.json
-#   { "complete": "Sosumi", "error": "Funk" }
+#   { "complete": "Sosumi" }
 #
-# Priority: --sound flag > ~/.ccbeep.json > built-in defaults
+# Priority: --sound flag > ~/.ccbeep.json > built-in default (Purr)
 set -euo pipefail
 
 CONFIG_FILE="$HOME/.ccbeep.json"
@@ -63,20 +61,7 @@ except:
 
 # ── macOS ──────────────────────────────────────────────────────────────────────
 sound_macos() {
-    local event="$1"
-    local override="${2:-}"
-
-    local sound_name=""
-    if [ -n "$override" ]; then
-        sound_name="$override"
-    else
-        case "$event" in
-            complete) sound_name="Purr"  ;;
-            error)    sound_name="Basso" ;;
-            prompt)   sound_name="Purr"  ;;
-            *)        sound_name="Purr"  ;;
-        esac
-    fi
+    local sound_name="${1:-Purr}"
 
     if [[ "$sound_name" == */* ]]; then
         # Custom file path
@@ -96,8 +81,7 @@ sound_macos() {
 
 # ── Linux ──────────────────────────────────────────────────────────────────────
 sound_linux() {
-    local event="$1"
-    local override="${2:-}"
+    local override="${1:-}"
 
     # Resolve sound name/file
     local sound_file=""
@@ -122,14 +106,7 @@ sound_linux() {
     fi
 
     if [ -z "$sound_file" ]; then
-        # Built-in defaults
-        local sound_dir="/usr/share/sounds/freedesktop/stereo"
-        case "$event" in
-            complete) sound_file="$sound_dir/complete.oga"   ;;
-            error)    sound_file="$sound_dir/dialog-error.oga" ;;
-            prompt)   sound_file="$sound_dir/complete.oga"  ;;
-            *)        sound_file="$sound_dir/complete.oga"  ;;
-        esac
+        sound_file="/usr/share/sounds/freedesktop/stereo/complete.oga"
     fi
 
     if [ -f "$sound_file" ]; then
@@ -147,21 +124,7 @@ sound_linux() {
 
 # ── Windows ────────────────────────────────────────────────────────────────────
 sound_windows() {
-    local event="$1"
-    local override="${2:-}"
-
-    # Resolve frequency:duration or freq1:dur1,freq2:dur2
-    local spec=""
-    if [ -n "$override" ]; then
-        spec="$override"
-    else
-        case "$event" in
-            complete) spec="1000:200,1200:300" ;;
-            error)    spec="400:500"            ;;
-            prompt)   spec="1000:200,1200:300"  ;;
-            *)        spec="1000:200,1200:300"  ;;
-        esac
-    fi
+    local spec="${1:-1000:200,1200:300}"
 
     # Parse spec: "freq:dur" or "freq1:dur1,freq2:dur2"
     local tones=()
@@ -223,37 +186,6 @@ list_sounds() {
     esac
 }
 
-# ── Parse stdin JSON for Stop hook reason ─────────────────────────────────────
-detect_stop_reason() {
-    local input
-    input="$(cat 2>/dev/null || true)"
-
-    if [ -z "$input" ]; then
-        echo "complete"
-        return
-    fi
-
-    if command -v python3 &>/dev/null; then
-        local reason
-        reason="$(echo "$input" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    print(data.get('reason', 'complete'))
-except:
-    print('complete')
-" 2>/dev/null || echo "complete")"
-        echo "$reason"
-        return
-    fi
-
-    if echo "$input" | grep -qiE '"reason"\s*:\s*"(error|interrupted|failed)"' ; then
-        echo "error"
-    else
-        echo "complete"
-    fi
-}
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 main() {
     local event=""
@@ -283,20 +215,15 @@ main() {
         exit 0
     fi
 
-    # Handle 'stop' event: read stdin to figure out success vs error
-    if [ "$event" = "stop" ]; then
-        event="$(detect_stop_reason)"
-    fi
-
     # Load config file if no CLI override
     if [ -z "$sound_override" ]; then
         sound_override="$(load_config "$event")"
     fi
 
     case "$os" in
-        macos)   sound_macos   "$event" "$sound_override" ;;
-        linux)   sound_linux   "$event" "$sound_override" ;;
-        windows) sound_windows "$event" "$sound_override" ;;
+        macos)   sound_macos   "$sound_override" ;;
+        linux)   sound_linux   "$sound_override" ;;
+        windows) sound_windows "$sound_override" ;;
         *)
             echo -e '\a'
             ;;
