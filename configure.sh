@@ -51,7 +51,7 @@ show_list() {
         done
         echo ""
         echo ""
-        echo "Usage: ./configure.sh --complete <name|number> --error <name|number>"
+        echo "Usage: ./configure.sh --complete NAME|NUM --error NAME|NUM"
         echo "       ./configure.sh --complete /path/to/custom.wav"
     elif [ "$OS" = "linux" ]; then
         for d in /usr/share/sounds/freedesktop/stereo \
@@ -63,7 +63,7 @@ show_list() {
             fi
         done
         echo ""
-        echo "Usage: ./configure.sh --complete <name> --error <name>"
+        echo "Usage: ./configure.sh --complete NAME --error NAME"
     else
         echo "  Beep format: frequency:duration  (e.g. 800:200)"
         echo "  Multi-tone:  1000:200,1200:300"
@@ -188,7 +188,7 @@ show_current
 show_list
 echo ""
 echo "  ── Quick setup (non-interactive) ──"
-echo "  ./configure.sh --complete <name|number> --error <name|number>"
+echo "  ./configure.sh --complete NAME|NUM --error NAME|NUM"
 echo "  ./configure.sh --list          show sounds"
 echo "  ./configure.sh --test          test current config"
 echo "  ./configure.sh --reset         restore defaults"
