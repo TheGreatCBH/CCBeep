@@ -1,0 +1,59 @@
+{
+  "_description": "CCBee sound notification hooks for Claude Code. Copy the 'hooks' block into your settings.json (user-level: ~/.claude/settings.json, or project-level: <project>/.claude/settings.json). Replace <CCBEEP_DIR> with the absolute path to this project (e.g., /Users/you/projects/CCBeep or C:\\Users\\you\\projects\\CCBeep).",
+
+  "hooks": {
+
+    "_comment_UserPromptSubmit": "Fires when user submits a prompt — plays a gentle sound to acknowledge input received.",
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "command": "<CCBEEP_DIR>/ccbee.sh prompt"
+      }
+    ],
+
+    "_comment_Notification": "Fires on desktop notification events (task complete, etc.) — plays a completion chime.",
+    "Notification": [
+      {
+        "matcher": "",
+        "command": "<CCBEEP_DIR>/ccbee.sh complete"
+      }
+    ],
+
+    "_comment_Stop": "Fires when agent stops — the script reads stdin JSON to auto-detect error vs success and play the right sound.",
+    "Stop": [
+      {
+        "matcher": "",
+        "command": "<CCBEEP_DIR>/ccbee.sh stop"
+      }
+    ]
+  },
+
+  "_windows_alternative": "For native Windows (PowerShell), use these command lines instead:",
+  "_windows_hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event prompt"
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event complete"
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event stop"
+      }
+    ]
+  },
+
+  "_sound_customization": {
+    "_comment": "You can customize sounds by passing a custom sound name or file path:",
+    "macOS_available_sounds": ["Basso", "Blow", "Bottle", "Frog", "Funk", "Glass", "Hero", "Morse", "Ping", "Pop", "Purr", "Sosumi", "Submarine", "Tink"],
+    "example_custom_prompt": "ccbee.sh prompt --sound Ping",
+    "example_custom_file": "ccbee.sh custom /path/to/your/sound.wav"
+  }
+}

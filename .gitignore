@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+*.orig
+.vscode/
+.idea/
+*.sublime-*
+
+# Claude Code local settings (may contain credentials)
+.claude/settings.local.json
+settings.local.json
+
+# Shell history
+.history
+*.log
+
+# Backup files
+*.bak
+*.backup
