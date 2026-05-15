@@ -42,19 +42,34 @@ Add the following to your Claude Code settings:
     "UserPromptSubmit": [
       {
         "matcher": "",
-        "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt"
+          }
+        ]
       }
     ],
     "Notification": [
       {
         "matcher": "",
-        "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete"
+          }
+        ]
       }
     ],
     "Stop": [
       {
         "matcher": "",
-        "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop"
+          }
+        ]
       }
     ]
   }
@@ -67,7 +82,7 @@ If you already have other settings, merge only the `"hooks"` block — do not re
 
 ### Windows (PowerShell)
 
-On Windows with PowerShell, use the `.ps1` script instead:
+On Windows with PowerShell, use the `.ps1` script with the `powershell` shell type:
 
 ```json
 {
@@ -75,19 +90,37 @@ On Windows with PowerShell, use the `.ps1` script instead:
     "UserPromptSubmit": [
       {
         "matcher": "",
-        "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event prompt"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event prompt",
+            "shell": "powershell"
+          }
+        ]
       }
     ],
     "Notification": [
       {
         "matcher": "",
-        "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event complete"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event complete",
+            "shell": "powershell"
+          }
+        ]
       }
     ],
     "Stop": [
       {
         "matcher": "",
-        "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event stop"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event stop",
+            "shell": "powershell"
+          }
+        ]
       }
     ]
   }
@@ -182,13 +215,13 @@ chmod +x ccbee.sh
 {
   "hooks": {
     "UserPromptSubmit": [
-      { "matcher": "", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt" }
+      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh prompt" }] }
     ],
     "Notification": [
-      { "matcher": "", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete" }
+      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete" }] }
     ],
     "Stop": [
-      { "matcher": "", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop" }
+      { "matcher": "", "hooks": [{ "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop" }] }
     ]
   }
 }

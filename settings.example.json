@@ -7,7 +7,12 @@
     "UserPromptSubmit": [
       {
         "matcher": "",
-        "command": "<CCBEEP_DIR>/ccbee.sh prompt"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<CCBEEP_DIR>/ccbee.sh prompt"
+          }
+        ]
       }
     ],
 
@@ -15,7 +20,12 @@
     "Notification": [
       {
         "matcher": "",
-        "command": "<CCBEEP_DIR>/ccbee.sh complete"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<CCBEEP_DIR>/ccbee.sh complete"
+          }
+        ]
       }
     ],
 
@@ -23,35 +33,34 @@
     "Stop": [
       {
         "matcher": "",
-        "command": "<CCBEEP_DIR>/ccbee.sh stop"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "<CCBEEP_DIR>/ccbee.sh stop"
+          }
+        ]
       }
     ]
   },
 
-  "_windows_alternative": "For native Windows (PowerShell), use these command lines instead:",
-  "_windows_hooks": {
+  "_windows_note": "Hook format is identical on Windows when using Git Bash / WSL. For native PowerShell, use 'powershell' as the shell type.",
+  "_windows_hooks_example": {
     "UserPromptSubmit": [
       {
         "matcher": "",
-        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event prompt"
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "",
-        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event complete"
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event stop"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event prompt",
+            "shell": "powershell"
+          }
+        ]
       }
     ]
   },
 
   "_sound_customization": {
-    "_comment": "You can customize sounds by passing a custom sound name or file path:",
+    "_comment": "You can customize sounds by editing the sound names in ccbee.sh.",
     "macOS_available_sounds": ["Basso", "Blow", "Bottle", "Frog", "Funk", "Glass", "Hero", "Morse", "Ping", "Pop", "Purr", "Sosumi", "Submarine", "Tink"],
     "example_custom_prompt": "ccbee.sh prompt --sound Ping",
     "example_custom_file": "ccbee.sh custom /path/to/your/sound.wav"
