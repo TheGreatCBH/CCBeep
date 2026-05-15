@@ -6,6 +6,7 @@
 #   ./configure.sh --complete 12 --error 5          (by number)
 #   ./configure.sh --list                            (show sounds)
 #   ./configure.sh --test                            (test current config)
+#   ./configure.sh --reset                           (restore defaults)
 #
 # Interactive (terminal only):
 #   ./configure.sh
@@ -129,8 +130,14 @@ if [ $# -gt 0 ]; then
                 do_test=true
                 shift
                 ;;
+            --reset)
+                rm -f "$CONFIG_FILE"
+                echo "Config reset to defaults (Purr / Basso)."
+                exit 0
+                ;;
             *)
                 echo "Unknown flag: $1"
+                echo "Usage: ./configure.sh [--complete SOUND] [--error SOUND] [--list] [--test] [--reset]"
                 echo "Usage: ./configure.sh [--complete SOUND] [--error SOUND] [--list] [--test]"
                 exit 1
                 ;;
@@ -168,7 +175,7 @@ if [ $# -gt 0 ]; then
         exit 0
     fi
 
-    echo "Nothing to do. Use --complete / --error / --list / --test"
+    echo "Nothing to do. Use --complete / --error / --list / --test / --reset"
     exit 0
 fi
 
