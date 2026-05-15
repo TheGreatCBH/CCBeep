@@ -79,6 +79,16 @@ Add directly to `~/.claude/settings.json`:
 
 No need to edit the script. Three ways to customize:
 
+### 0. Interactive configurator (easiest)
+
+```bash
+./configure.sh
+```
+
+Walks you through picking sounds for each event with a numbered menu, then tests them.
+
+### 1. Persistent config (recommended)
+
 ### 1. Persistent config (recommended)
 
 Create `~/.ccbeep.json`:
@@ -219,6 +229,12 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBeep && ./install.
 ### 自定义声音
 
 不需要改脚本，三种方式：
+
+**0. 交互式配置器（最简单）**
+```bash
+./configure.sh
+```
+菜单式选择音效，选完直接测试。
 
 **1. 配置文件（推荐）**
 
