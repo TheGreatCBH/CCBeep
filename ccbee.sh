@@ -14,6 +14,23 @@
 #   "Stop":         [{"matcher": "", "hooks": [{"type": "command", "command": ".../ccbee.sh stop"}]}]
 set -euo pipefail
 
+# ── Mute check ──────────────────────────────────────────────────────────────────
+# If ~/.ccbee_mute exists, exit silently.
+# If the file contains a Unix timestamp, auto-unmute after that time.
+MUTE_FILE="$HOME/.ccbee_mute"
+if [ -f "$MUTE_FILE" ]; then
+    expiry="$(cat "$MUTE_FILE" 2>/dev/null || true)"
+    if [ -n "$expiry" ] && [ "$expiry" -gt 0 ] 2>/dev/null; then
+        if [ "$(date +%s)" -gt "$expiry" ]; then
+            rm -f "$MUTE_FILE"  # expired — auto-unmute
+        else
+            exit 0  # still muted
+        fi
+    else
+        exit 0  # permanently muted (no timestamp)
+    fi
+fi
+
 # ── OS detection ──────────────────────────────────────────────────────────────
 detect_os() {
     case "$(uname -s)" in

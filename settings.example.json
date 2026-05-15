@@ -1,5 +1,5 @@
 {
-  "_description": "CCBee hook configuration reference. Use install.sh for automatic setup, or copy the 'hooks' block into ~/.claude/settings.json manually. Replace <CCBEEP_DIR> with the absolute path to this project.",
+  "_description": "CCBee hook configuration reference. Use install.sh for automatic setup, or install as a Claude Code plugin. Replace <CCBEEP_DIR> with the absolute path to this project.",
 
   "hooks": {
 
@@ -10,7 +10,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<CCBEEP_DIR>/ccbee.sh complete"
+            "command": "<CCBEEP_DIR>/ccbee.sh complete",
+            "async": true
           }
         ]
       }
@@ -23,7 +24,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "<CCBEEP_DIR>/ccbee.sh stop"
+            "command": "<CCBEEP_DIR>/ccbee.sh stop",
+            "async": true
           }
         ]
       }
@@ -38,7 +40,8 @@
           {
             "type": "command",
             "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event complete",
-            "shell": "powershell"
+            "shell": "powershell",
+            "async": true
           }
         ]
       }
@@ -50,7 +53,8 @@
           {
             "type": "command",
             "command": "powershell -NoProfile -File \"<CCBEEP_DIR>\\ccbee.ps1\" -Event stop",
-            "shell": "powershell"
+            "shell": "powershell",
+            "async": true
           }
         ]
       }

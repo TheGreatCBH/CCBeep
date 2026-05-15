@@ -10,22 +10,39 @@ Sound notifications for [Claude Code](https://claude.ai/code) — know when Clau
 | **Linux** | `paplay` or `aplay` with freedesktop sound theme | Terminal bell |
 | **Windows** | PowerShell `[System.Console]::Beep` or ccbee.ps1 | BEL character |
 
-## Quick Start
+## Installation
 
-### One-command install
+### Method 1: One-command install
 
 ```bash
 git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
 ```
 
-That's it. The installer automatically:
-- Detects the CCBee directory
-- Backs up your existing `~/.claude/settings.json`
-- Merges the hooks into your settings
+The installer automatically detects paths, backs up your settings, and merges the hooks.
 
-### Manual install
+### Method 2: As a Claude Code plugin
 
-If you prefer to configure manually, add the following to `~/.claude/settings.json`:
+Add the marketplace and enable the plugin in `~/.claude/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "ccbee": {
+      "source": "github",
+      "repo": "your-username/CCBee"
+    }
+  },
+  "enabledPlugins": {
+    "ccbee@ccbee": true
+  }
+}
+```
+
+Then restart Claude Code. The plugin's hooks are automatically loaded — no path configuration needed.
+
+### Method 3: Manual hook configuration
+
+Add directly to `~/.claude/settings.json`:
 
 ```json
 {
@@ -34,10 +51,7 @@ If you prefer to configure manually, add the following to `~/.claude/settings.js
       {
         "matcher": "",
         "hooks": [
-          {
-            "type": "command",
-            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete"
-          }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh complete" }
         ]
       }
     ],
@@ -45,53 +59,13 @@ If you prefer to configure manually, add the following to `~/.claude/settings.js
       {
         "matcher": "",
         "hooks": [
-          {
-            "type": "command",
-            "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop"
-          }
+          { "type": "command", "command": "/ABSOLUTE/PATH/TO/CCBeep/ccbee.sh stop" }
         ]
       }
     ]
   }
 }
 ```
-
-Replace `/ABSOLUTE/PATH/TO/CCBeep` with the actual path. If you already have settings, merge only the `"hooks"` block.
-
-### Windows (PowerShell)
-
-```json
-{
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event complete",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -NoProfile -File \"C:\\path\\to\\CCBeep\\ccbee.ps1\" -Event stop",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-You can also run `ccbee.sh` under Git Bash or WSL on Windows.
 
 ### Test sounds
 
@@ -99,6 +73,21 @@ You can also run `ccbee.sh` under Git Bash or WSL on Windows.
 ./ccbee.sh complete     # Completion chime
 ./ccbee.sh error        # Warning sound
 ```
+
+## Mute / Unmute
+
+Temporarily silence notifications without uninstalling:
+
+```bash
+./mute.sh         # Mute permanently (until unmuted)
+./mute.sh 2h      # Mute for 2 hours, auto-unmute
+./mute.sh 30m     # Mute for 30 minutes
+./mute.sh 1d      # Mute for 1 day
+
+./unmute.sh       # Unmute immediately
+```
+
+Mute state is stored in `~/.ccbee_mute` — delete it manually to unmute from anywhere.
 
 ## Event Types
 
@@ -108,16 +97,27 @@ You can also run `ccbee.sh` under Git Bash or WSL on Windows.
 | **Task stop (success)** | `Stop` | Completion chime | Agent stops normally |
 | **Task stop (error)** | `Stop` | Low warning tone | Task interrupted, failed, or cancelled |
 
-The `Stop` hook receives JSON from Claude Code on stdin. CCBee reads the `reason` field and picks the right sound automatically (`"completed"` → complete, `"error"` / `"interrupted"` → error).
+The `Stop` hook receives JSON on stdin. CCBee reads the `reason` field and picks the right sound automatically.
 
 ## Uninstall
 
+### If installed via install.sh
+
 ```bash
-# Restore from the backup created by install.sh
 cp ~/.claude/settings.json.backup.* ~/.claude/settings.json
 ```
 
-Or manually remove the `hooks` block from `~/.claude/settings.json`.
+### If installed as a plugin
+
+Remove from `~/.claude/settings.json`:
+- Delete `"ccbee@ccbee"` from `enabledPlugins`
+- Delete `"ccbee"` from `extraKnownMarketplaces`
+
+### If installed manually
+
+Remove the `hooks` block from `~/.claude/settings.json`.
+
+Then delete the CCBee directory.
 
 ## Customizing Sounds
 
@@ -140,7 +140,7 @@ Available sounds depend on your sound theme. Common paths:
 - `/usr/share/sounds/ubuntu/stereo/`
 - `/usr/share/sounds/gnome/default/alerts/`
 
-Edit `ccbee.sh` to change the paths in `sound_linux()`. Falls back to `aplay` (ALSA) or terminal bell if PulseAudio is unavailable.
+Edit `ccbee.sh` to change the paths in `sound_linux()`.
 
 ### Windows
 
@@ -148,13 +148,7 @@ Edit `ccbee.ps1` and change the `Frequency` and `Duration` parameters in the `Pl
 
 ## No Dependencies
 
-CCBee uses only system built-in tools:
-
-- **macOS**: `afplay` (pre-installed)
-- **Linux**: `paplay` (PulseAudio, default on most distros) or `aplay` (ALSA)
-- **Windows**: PowerShell (pre-installed)
-
-No `pip install`, no `brew install`, no third-party packages.
+Only system built-in tools: `afplay` (macOS), `paplay`/`aplay` (Linux), PowerShell (Windows).
 
 ---
 
@@ -162,18 +156,40 @@ No `pip install`, no `brew install`, no third-party packages.
 
 ### CCBee — Claude Code 声音通知工具
 
-让 Claude Code 在任务完成或中断时自动发出提示音，你不用盯着终端也能知道状态变化。
+让 Claude Code 在任务完成或中断时自动发出提示音，不用盯着终端也能知道状态变化。
 
-### 一键安装
+### 安装方式
 
+**方式一：一键安装**
 ```bash
 git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.sh
 ```
 
-安装脚本会自动：
-- 检测 CCBee 目录
-- 备份现有 `~/.claude/settings.json`
-- 将 hooks 合并到配置文件中
+**方式二：作为插件安装**
+
+在 `~/.claude/settings.json` 中添加：
+```json
+{
+  "extraKnownMarketplaces": {
+    "ccbee": { "source": "github", "repo": "your-username/CCBee" }
+  },
+  "enabledPlugins": {
+    "ccbee@ccbee": true
+  }
+}
+```
+
+重启 Claude Code 即生效。
+
+### 静音 / 取消静音
+
+```bash
+./mute.sh         # 永久静音
+./mute.sh 2h      # 静音 2 小时，自动恢复
+./mute.sh 30m     # 静音 30 分钟
+
+./unmute.sh       # 取消静音
+```
 
 ### 事件说明
 
@@ -185,17 +201,9 @@ git clone https://github.com/your-username/CCBeep.git && cd CCBee && ./install.s
 
 ### 卸载
 
-```bash
-cp ~/.claude/settings.json.backup.* ~/.claude/settings.json
-```
-
-### 自定义声音
-
-编辑 `ccbee.sh` 中的声音名称即可。macOS 系统自带的声音文件在 `/System/Library/Sounds/` 目录下，Linux 在 `/usr/share/sounds/` 下。
-
-### 零依赖
-
-只使用系统自带工具，不需要安装任何第三方库。
+- install.sh 安装：`cp ~/.claude/settings.json.backup.* ~/.claude/settings.json`
+- 插件安装：从 `enabledPlugins` 和 `extraKnownMarketplaces` 中移除对应项
+- 手动安装：从 settings.json 中删除 `hooks` 块
 
 ## License
 
