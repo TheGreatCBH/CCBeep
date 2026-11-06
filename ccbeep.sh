@@ -59,6 +59,90 @@ except:
 " 2>/dev/null
 }
 
+# ── Terminal bell ──────────────────────────────────────────────────────────────
+# Hook stdout is captured by Claude Code, so a plain `echo -e '\a'` never reaches
+# the terminal. Walk up the process tree to the first ancestor that owns a tty
+# (normally the claude process) and write BEL there. Over ssh / mosh / tmux the
+# bell is forwarded to the local terminal, which plays its alert sound.
+# The walk is bounded so a tty-less claude (IDE, `claude -p`) does not ring some
+# unrelated terminal far up the tree; if nothing is found it stays silent rather
+# than writing BEL into the captured hook output.
+find_bell_tty() {
+    local pid=$$ tty ppid hops=0
+    while [ "$hops" -lt 6 ] && [[ "$pid" =~ ^[0-9]+$ ]] && [ "$pid" -gt 1 ]; do
+        tty="" ppid=""
+        read -r tty ppid < <(ps -o tty=,ppid= -p "$pid" 2>/dev/null || true) || true
+        if [[ "$tty" =~ ^[A-Za-z0-9/]+$ ]] && [ -c "/dev/$tty" ] && [ -w "/dev/$tty" ]; then
+            printf '%s' "/dev/$tty"
+            return 0
+        fi
+        pid="$ppid"
+        hops=$((hops + 1))
+    done
+    return 0
+}
+
+# The tty is resolved lazily, at most once, and always in the foreground: a
+# backgrounded fallback (player failed after this script exited) must not walk
+# the tree from a PID that may already be gone or reused.
+BELL_TTY="" BELL_TTY_RESOLVED=0
+resolve_bell_tty() {
+    if [ "$BELL_TTY_RESOLVED" -eq 0 ]; then
+        BELL_TTY="$(find_bell_tty)"
+        BELL_TTY_RESOLVED=1
+    fi
+}
+ring_bell() {
+    bell_disabled && return 0
+    resolve_bell_tty
+    if [ -n "$BELL_TTY" ]; then
+        printf '\a' > "$BELL_TTY" 2>/dev/null || true
+    fi
+    return 0
+}
+
+# Play a sound in the background; if the player fails, ring the bell instead.
+# Output is detached so the hook's pipes close immediately (PermissionRequest
+# is synchronous).
+play_or_bell() {
+    if bell_disabled; then
+        "$@" >/dev/null 2>&1 &
+        return 0
+    fi
+    resolve_bell_tty
+    { "$@" || ring_bell; } >/dev/null 2>&1 &
+}
+
+# CCBEEP_MODE=local means "local player only": no bell, not even as a fallback.
+bell_disabled() {
+    [ "$(printf '%s' "${CCBEEP_MODE:-}" | tr '[:upper:]' '[:lower:]')" = local ]
+}
+
+# Remote mode: play the sound on the terminal you are looking at instead of the
+# machine Claude Code runs on. Used when Claude Code runs on a server you reach
+# via ssh / mosh / tmux, where afplay / paplay would play on the server.
+#   CCBEEP_MODE=bell   always use the terminal bell
+#   CCBEEP_MODE=local  always use the local sound player (previous behaviour)
+#   unset              auto: bell when in an SSH session (even with X forwarding,
+#                      audio would still play on the server). Inside tmux the
+#                      SSH variables can be stale or missing; set the mode
+#                      explicitly if auto picks wrong.
+# If bell mode finds no terminal (IDE, `claude -p`), the local player is used.
+# Players that fail at runtime (e.g. paplay with no sound server) also fall back
+# to the bell. That rescues mosh/tmux sessions without SSH variables only when the
+# server has no working audio; otherwise set CCBEEP_MODE=bell.
+use_bell() {
+    local mode
+    mode="$(printf '%s' "${CCBEEP_MODE:-auto}" | tr '[:upper:]' '[:lower:]')"
+    case "$mode" in
+        bell)  return 0 ;;
+        local) return 1 ;;
+        auto|"") ;;
+        *) echo "ccbeep: unknown CCBEEP_MODE='${CCBEEP_MODE}', expected bell|local; using auto" >&2 ;;
+    esac
+    [ -n "${SSH_CONNECTION:-}${SSH_TTY:-}" ]
+}
+
 # ── macOS ──────────────────────────────────────────────────────────────────────
 sound_macos() {
     local sound_name="${1:-Purr}"
@@ -66,15 +150,17 @@ sound_macos() {
     if [[ "$sound_name" == */* ]]; then
         # Custom file path
         if [ -f "$sound_name" ]; then
-            afplay "$sound_name" &
+            play_or_bell afplay "$sound_name"
+        else
+            ring_bell
         fi
     else
         # System sound name
         local sound_file="/System/Library/Sounds/${sound_name}.aiff"
         if [ -f "$sound_file" ]; then
-            afplay "$sound_file" &
+            play_or_bell afplay "$sound_file"
         else
-            echo -e '\a'
+            ring_bell
         fi
     fi
 }
@@ -111,14 +197,14 @@ sound_linux() {
 
     if [ -f "$sound_file" ]; then
         if command -v paplay &>/dev/null; then
-            paplay "$sound_file" &
+            play_or_bell paplay "$sound_file"
         elif command -v aplay &>/dev/null; then
-            aplay "$sound_file" &>/dev/null &
+            play_or_bell aplay "$sound_file"
         else
-            echo -e '\a'
+            ring_bell
         fi
     else
-        echo -e '\a'
+        ring_bell
     fi
 }
 
@@ -215,6 +301,15 @@ main() {
         exit 0
     fi
 
+    # Bell mode needs a Unix ps; Windows keeps its PowerShell beep.
+    if { [ "$os" = macos ] || [ "$os" = linux ]; } && use_bell; then
+        resolve_bell_tty
+        if [ -n "$BELL_TTY" ]; then
+            ring_bell
+            exit 0
+        fi
+    fi
+
     # Load config file if no CLI override
     if [ -z "$sound_override" ]; then
         sound_override="$(load_config "$event")"
@@ -225,7 +320,7 @@ main() {
         linux)   sound_linux   "$sound_override" ;;
         windows) sound_windows "$sound_override" ;;
         *)
-            echo -e '\a'
+            ring_bell
             ;;
     esac
 }
