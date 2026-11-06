@@ -64,6 +64,7 @@ Most desktop notification tools are general-purpose. CCBeep is built specificall
 |----------|-------------|----------|
 | **macOS** | `afplay` with built-in system sounds | Terminal bell |
 | **Linux** | `paplay` or `aplay` with freedesktop sound theme | Terminal bell |
+| **Remote (ssh / mosh / tmux)** | Terminal bell, forwarded to your local terminal | — |
 | **Windows** | PowerShell `[System.Console]::Beep` | BEL character |
 
 ## Installation
@@ -186,6 +187,15 @@ Sound names resolve against freedesktop/ubuntu/gnome sound theme directories. Us
 ### Windows
 
 Use Beep frequency:duration format: `"800:200"` for a single tone, `"1000:200,1200:300"` for multi-tone.
+
+## Running Claude Code on a remote server
+
+If Claude Code runs on a server you reach over **ssh / mosh / tmux**, `afplay` / `paplay` would play on the server, where nobody can hear it. In that case CCBeep rings the **terminal bell** instead: it writes a BEL character to the terminal Claude Code is running in, and ssh / mosh / tmux forward it to the terminal on your own computer, which plays its alert sound.
+
+- **Auto:** the bell is used when you are in an SSH session (`SSH_CONNECTION` / `SSH_TTY` set — even with X forwarding, since audio would still play on the server), or when the sound player is missing or fails (e.g. `paplay` with no sound server). Running on your own machine is unchanged. Inside tmux the SSH variables can be stale or missing — if auto picks wrong, set `CCBEEP_MODE` explicitly.
+- **Force it:** set `CCBEEP_MODE=bell` (always bell) or `CCBEEP_MODE=local` (always play the sound locally) in the environment Claude Code runs in.
+- **On your computer:** enable the audible bell in your terminal (macOS Terminal: Settings → Profiles → Advanced → Bell → *Audible bell*; iTerm2: Profiles → Terminal → uncheck *Silence bell*). The sound is your system alert sound, and its loudness follows the *alert volume*.
+- **tmux:** keep the defaults `bell-action any` and `visual-bell off`.
 
 ## Mute / Unmute
 
@@ -332,6 +342,15 @@ git clone https://github.com/TheGreatCBH/CCBeep.git && cd CCBeep && ./install.sh
 `Stop` 是 Claude Code agent 停止的实用信号，适合用来感知"Claude 这一轮是否结束了"。
 
 所有事件默认播放相同的声音（Purr），可通过 `~/.ccbeep.json` 自定义。
+
+### 在远程服务器上运行 Claude Code
+
+如果 Claude Code 跑在通过 **ssh / mosh / tmux** 连接的服务器上，`afplay` / `paplay` 会在服务器上播放，你听不到。这时 CCBeep 改用**终端响铃**：把 BEL 字符写进 Claude Code 所在的终端，由 ssh / mosh / tmux 转发到你本机的终端，再由本机终端播放提示音。
+
+- **自动判断**：处于 SSH 会话（设置了 `SSH_CONNECTION` / `SSH_TTY`，即使开了 X 转发，声音也仍在服务器上播放），或者播放器不存在、播放失败（比如没有声音服务的 `paplay`）时，使用终端响铃。在自己电脑上直接运行的行为不变。tmux 里的 SSH 环境变量可能过时或缺失，自动判断不准时请显式设置 `CCBEEP_MODE`。
+- **手动指定**：在 Claude Code 的运行环境里设置 `CCBEEP_MODE=bell`（总是响铃）或 `CCBEEP_MODE=local`（总是本机播放）。
+- **本机终端设置**：打开终端的可闻响铃（macOS 终端：设置 → 描述文件 → 高级 → 响铃 → 可闻响铃；iTerm2：Profiles → Terminal → 取消 *Silence bell*）。声音是系统提醒音，音量跟随“提醒音量”。
+- **tmux**：保持默认的 `bell-action any`、`visual-bell off` 即可。
 
 ### 卸载
 
